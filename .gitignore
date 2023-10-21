@@ -1,0 +1,8 @@
+/examples/mnist/dataset
+/.vscode
+*.exe
+*.ilk
+*.pdb
+*.obj
+tensor*
+/build
