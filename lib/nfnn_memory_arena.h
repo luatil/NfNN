@@ -19,6 +19,12 @@ struct nfnn_memory_arena
 static void NfNN_MemoryArena_Init(nfnn_memory_arena *Arena, u64 Size)
 {
     Arena->Base = (u8 *)calloc(Size, 1);
+
+    if (Arena->Base == NULL)
+    {
+        NFNN_ASSERT(0, "Memory arena initialization failed.");
+    }
+
     Arena->Size = Size;
     Arena->Used = 0;
 }
