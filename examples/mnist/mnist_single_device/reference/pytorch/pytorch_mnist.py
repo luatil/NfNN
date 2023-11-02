@@ -5,11 +5,12 @@ from torch.utils.data import DataLoader, random_split
 from torchvision import datasets, transforms
 import torch.nn.functional as F
 
-device = 'cpu' 
+device = 'cpu'
 
 # Load the MNIST dataset
 transform = transforms.Compose([transforms.ToTensor()])
-full_train_data = datasets.MNIST(root='../../../dataset', train=True, download=False, transform=transform)
+full_train_data = datasets.MNIST(
+    root='../../../dataset', train=True, download=False, transform=transform)
 
 # Split the original training data into a training set and a validation set
 num_train = int(len(full_train_data) * 0.8)
@@ -36,7 +37,7 @@ for epoch in range(num_epochs):
     for images, labels in train_loader:
         images, labels = images.to(device), labels.to(device)
 
-        optimizer.zero_grad()  
+        optimizer.zero_grad()
 
         flatten = images.reshape(-1, 28*28)
         l1 = flatten @ w1
@@ -46,10 +47,10 @@ for epoch in range(num_epochs):
         l2b = l2 + b2
         outputs = F.log_softmax(l2b, dim=1)
 
-        loss = criterion(outputs, labels)  
-        loss.backward()  
+        loss = criterion(outputs, labels)
+        loss.backward()
         optimizer.step()
-        
+
         running_loss += loss.item()
 
     # Validation loop
@@ -68,7 +69,7 @@ for epoch in range(num_epochs):
             _, predicted = torch.max(outputs.data, 1)
             total += labels.size(0)
             correct += (predicted == labels).sum().item()
-    
+
     val_accuracy = 100 * correct / total
     print(f"Epoch {epoch+1}/{num_epochs}, Loss: {running_loss/len(train_loader)}, Validation Accuracy: {val_accuracy}%")
 
