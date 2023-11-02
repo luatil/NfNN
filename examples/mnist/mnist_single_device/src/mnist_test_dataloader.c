@@ -13,7 +13,7 @@ int main(int ArgCount, char **Args)
     u32 Seed = NFNN_ATOI(Args[1]);
 
     nfnn_memory_arena Mem_P = {0};
-    NfNN_MemoryArena_Init(&Mem_P, GB(1));
+    NfNN_MemoryArena_Init(&Mem_P, MB(100));
 
     nfnn_random_state Random = {0};
     NfNN_Random_Init(&Random, Seed);
