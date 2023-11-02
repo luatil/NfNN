@@ -1,6 +1,6 @@
 #!/bin/bash
 
-opts="-g -Wall -Wno-unused-function"
+opts="-g -Wall -Wno-unused-function -O3"
 link_ops="-lm"
 includes="lib"
 out_dir="build"
