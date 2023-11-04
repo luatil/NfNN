@@ -173,7 +173,7 @@ NfNN_ParameterServer_AddWorker(nfnn_memory_arena *Mem, nfnn_parameter_server *Se
                 struct sockaddr PeerAddr = {0};
                 socklen_t PeerAddrlen = sizeof(struct sockaddr);
 
-                nfnn_platform_socket Peer = accept(Server->Socket->Handle, 0, 0);
+                nfnn_platform_socket Peer = accept(Server->Socket->Handle, &PeerAddr, &PeerAddrlen);
 
                 if (Peer == 0)
                 {
