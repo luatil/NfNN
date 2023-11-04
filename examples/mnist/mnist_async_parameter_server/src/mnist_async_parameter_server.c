@@ -227,13 +227,13 @@ RunAsWorker(configuration Config)
      * end for
      */
     nfnn_memory_arena Mem_P = {0};
-    NfNN_MemoryArena_Init(&Mem_P, GB(1));
+    NfNN_MemoryArena_Init(&Mem_P, MB(100));
 
     nfnn_random_state Random = {0};
     NfNN_Random_Init(&Random, Config.Seed);
 
     nfnn_memory_arena Mem_T = {0};
-    NfNN_MemoryArena_Init(&Mem_T, GB(1));
+    NfNN_MemoryArena_Init(&Mem_T, MB(100));
 
     nfnn_network_interface *Interface = NfNN_Network_CreateInterface(&Mem_P);
 
