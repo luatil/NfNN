@@ -23,9 +23,9 @@ val_loader = DataLoader(val_data, batch_size=32, shuffle=False)
 # Initialize the model, loss function and optimizer
 criterion = nn.NLLLoss()
 
-w1 = torch.rand((784, 512), requires_grad=True)
-b1 = torch.rand((512,), requires_grad=True)
-w2 = torch.rand((512, 10), requires_grad=True)
+w1 = torch.rand((784, 32), requires_grad=True)
+b1 = torch.rand((32,), requires_grad=True)
+w2 = torch.rand((32, 10), requires_grad=True)
 b2 = torch.rand((10,), requires_grad=True)
 
 optimizer = optim.SGD([w1, b1, w2, b2], lr=0.01)
