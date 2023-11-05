@@ -143,5 +143,5 @@ int main()
         u32 NumberOfBatches = NfNN_DataLoader_Mnist_NumberOfBatches(TrainLoader);
         printf("Epoch %d: Loss: %f, Validation Accuracy: %f\n", Epoch + 1, RunningLoss / NumberOfBatches, ValidationAccuracy);
     }
-    printf("Training Complete!");
+    printf("Training Complete!\n");
 }
