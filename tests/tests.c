@@ -500,6 +500,22 @@ NfNN_Test_Backward(nfnn_memory_arena *Mem)
         NFNN_TEST(NfNN_Math_CompareMemory_f32(B->Gradient, A->Data, NfNN_Length(A), 0.0001f), "Backward");
     }
 
+    {
+        /**
+         * A = [2.0f]
+         * B = [3.0f]
+         * C = A * B
+         * dC/dA = B
+         * dC/dB = A
+         */
+        nfnn_tensor *A = NfNN_Const(Mem, NfNN_Dim2(1, 1), 2.0f);
+        nfnn_tensor *B = NfNN_Const(Mem, NfNN_Dim2(1, 1), 3.0f);
+        nfnn_tensor *C = NfNN_Mul(Mem, A, B);
+        NfNN_AutoGrad_Backward(Mem, C);
+        NFNN_TEST(NfNN_Math_CompareMemory_f32(A->Gradient, B->Data, NfNN_Length(A), 0.0001f), "Backward");
+        NFNN_TEST(NfNN_Math_CompareMemory_f32(B->Gradient, A->Data, NfNN_Length(A), 0.0001f), "Backward");
+    }
+
     NfNN_MemoryArena_TempClear(Mem);
 }
 
