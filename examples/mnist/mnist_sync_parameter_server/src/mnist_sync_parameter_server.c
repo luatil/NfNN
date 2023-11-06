@@ -70,6 +70,7 @@ PrintHelp(char *Exe)
 static nfnn_optimizer *CreateOptimizer(nfnn_memory_arena *Mem, model Model, f32 LearningRate, u32 NumberOfWorkers)
 {
     nfnn_optimizer *Result = NfNN_Optimizer_SGD(Mem, LearningRate, NumberOfWorkers);
+    // nfnn_optimizer *Result = NfNN_Optimizer_Adam(Mem, LearningRate, NumberOfWorkers, 0, 0);
 
     NfNN_Optimizer_AddParam(Mem, Result, Model.W1);
     NfNN_Optimizer_AddParam(Mem, Result, Model.B1);

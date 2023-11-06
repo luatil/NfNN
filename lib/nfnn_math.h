@@ -7,6 +7,12 @@
 #include <math.h>
 
 static f32
+NfNN_Math_Single_Sqrt_f32(f32 X)
+{
+    return sqrtf(X);
+}
+
+static f32
 NfNN_Math_Single_Log_f32(f32 X)
 {
     return logf(X);

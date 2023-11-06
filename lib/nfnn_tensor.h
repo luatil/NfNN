@@ -220,6 +220,12 @@ static nfnn_tensor *NfNN_TensorLike(nfnn_memory_arena *Mem, nfnn_tensor *X)
     return Result;
 }
 
+static nfnn_tensor *NfNN_ZeroesLike(nfnn_memory_arena *Mem, nfnn_tensor *X)
+{
+    nfnn_tensor *Result = NfNN_CreateTensor(Mem, X->Dimensions, X->RequiresGrad);
+    return Result;
+}
+
 
 static void NfNN_Print_(nfnn_tensor *T)
 {

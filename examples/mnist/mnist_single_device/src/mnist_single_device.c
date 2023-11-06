@@ -33,6 +33,8 @@ int main()
     nfnn_tensor *B2 = NfNN_Matrix(&Mem_P, &Random, 1, 10);
 
     nfnn_optimizer *Optimizer = NfNN_Optimizer_SGD(&Mem_P, 0.01f, 1);
+    // nfnn_optimizer *Optimizer = NfNN_Optimizer_Adam(&Mem_P, 0, 1, 0, 0);
+
     NfNN_Optimizer_AddParam(&Mem_P, Optimizer, W1);
     NfNN_Optimizer_AddParam(&Mem_P, Optimizer, B1);
     NfNN_Optimizer_AddParam(&Mem_P, Optimizer, W2);
