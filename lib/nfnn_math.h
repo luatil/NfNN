@@ -91,11 +91,11 @@ NfNN_Math_Sigmoid_f32(f32 *In, u32 NumberOfElements, f32 *Out)
 }
 
 static void
-NfNN_Math_SigmoidD_f32(f32 *In, u32 NumberOfElements, f32 *Out)
+NfNN_Math_SigmoidD_f32(f32 *Grad, f32 *In, u32 N, f32 *Out)
 {
-    for (u32 Index = 0; Index < NumberOfElements; ++Index)
+    for (u32 Index = 0; Index < N; ++Index)
     {
-        Out[Index] = NfNN_Math_Single_SigmoidD_f32(In[Index]);
+        Out[Index] += Grad[Index] * NfNN_Math_Single_SigmoidD_f32(In[Index]);
     }
 }
 

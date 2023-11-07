@@ -142,6 +142,10 @@ NfNN_AutoGrad_Backward(nfnn_memory_arena *Mem,  nfnn_tensor *T)
             {
                 NfNN_Math_ReLUD_f32(It->Gradient, Op.Unary.Input->Data, NfNN_Length(Op.Unary.Input), Op.Unary.Input->Gradient);
             } break;
+            case NFNN_OP_TYPE_SIGMOID:
+            {
+                NfNN_Math_SigmoidD_f32(It->Gradient, Op.Unary.Input->Data, NfNN_Length(Op.Unary.Input), Op.Unary.Input->Gradient);
+            } break;
             case NFNN_OP_TYPE_TANH:
             {
                 NfNN_Math_TanhD_f32(It->Gradient, Op.Unary.Input->Data, NfNN_Length(Op.Unary.Input), Op.Unary.Input->Gradient);
