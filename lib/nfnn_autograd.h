@@ -142,6 +142,10 @@ NfNN_AutoGrad_Backward(nfnn_memory_arena *Mem,  nfnn_tensor *T)
             {
                 NfNN_Math_ReLUD_f32(It->Gradient, Op.Unary.Input->Data, NfNN_Length(Op.Unary.Input), Op.Unary.Input->Gradient);
             } break;
+            case NFNN_OP_TYPE_TANH:
+            {
+                NfNN_Math_TanhD_f32(It->Gradient, Op.Unary.Input->Data, NfNN_Length(Op.Unary.Input), Op.Unary.Input->Gradient);
+            } break;
             case NFNN_OP_TYPE_ADD:
             {
                 NfNN_Math_FmaddConst_f32(It->Gradient, 1.0f, NfNN_Length(Op.Binary.Left), Op.Binary.Left->Gradient ); 

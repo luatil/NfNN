@@ -283,6 +283,18 @@ static nfnn_tensor *NfNN_ReLU(nfnn_memory_arena *Mem, nfnn_tensor *T)
     return Result;
 }
 
+static nfnn_tensor *NfNN_Tanh(nfnn_memory_arena *Mem, nfnn_tensor *T)
+{
+    nfnn_tensor *Result = NfNN_TensorLike(Mem, T);
+
+    Result->Op.Type = NFNN_OP_TYPE_TANH;
+    Result->Op.Unary.Input = T;
+
+    NfNN_Math_Tanh_f32(T->Data, NfNN_Length(T), Result->Data);
+
+    return Result;
+}
+
 static nfnn_tensor *NfNN_Square(nfnn_memory_arena *Mem, nfnn_tensor *T)
 {
     nfnn_tensor *Result = NfNN_TensorLike(Mem, T);
@@ -308,6 +320,19 @@ static nfnn_tensor *NfNN_NLLLoss(nfnn_memory_arena *Mem, nfnn_tensor *T, nfnn_te
     nfnn_tensor *Result = NfNN_CreateTensor(Mem, NfNN_Dim2(1, 1), true);
     Result->Op = NfNN_Op_Binary(NFNN_OP_TYPE_NLL_LOSS, T, Indexes);
     NfNN_Math_NLLLoss_Mean_f32(T->Data, Indexes->Data, T->Dimensions.Dimensions[0], T->Dimensions.Dimensions[1], Result->Data);
+    return Result;
+}
+
+static nfnn_tensor *NfNN_MSELoss(nfnn_memory_arena *Mem, nfnn_tensor *X, nfnn_tensor *Y)
+{
+    nfnn_tensor *Diff = NfNN_Sub(Mem, X, Y); 
+    nfnn_tensor *Square = NfNN_Square(Mem, Diff);
+    nfnn_tensor *Loss = NfNN_SumAll(Mem, Square);
+
+    u32 BatchSize = X->Dimensions.Dimensions[0];
+    f32 InvBatchSize = 0.5f / (f32)BatchSize;
+
+    nfnn_tensor *Result = NfNN_Mul(Mem, Loss, NfNN_Const(Mem, NfNN_Dim2(1, 1), InvBatchSize));
     return Result;
 }
 

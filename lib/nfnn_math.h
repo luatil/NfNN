@@ -330,6 +330,24 @@ NfNN_Math_MatmulAddTransposeLeft_f32(f32 *A, f32 *B, u32 L, u32 M, u32 R, f32 *C
 }
 
 static void
+NfNN_Math_Tanh_f32(f32 *A, u32 N, f32 *Out)
+{
+    for (u32 Index = 0; Index < N; ++Index)
+    {
+        Out[Index] = NfNN_Math_Single_Tanh_f32(A[Index]);
+    }
+}
+
+static void
+NfNN_Math_TanhD_f32(f32 *Grad, f32 *In, u32 N, f32 *Out)
+{
+    for (u32 Index = 0; Index < N; ++Index)
+    {
+        Out[Index] += Grad[Index] * NfNN_Math_Single_Tanh_f32(In[Index]);
+    }
+}
+
+static void
 NfNN_Math_ReLU_f32(f32 *A, u32 N, f32 *Out)
 {
     for (u32 Index = 0; Index < N; ++Index)
