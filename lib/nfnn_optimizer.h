@@ -14,6 +14,7 @@ enum nfnn_optimizer_type
 typedef struct nfnn_optimizer_sgd_param nfnn_optimizer_sgd_param;
 struct nfnn_optimizer_sgd_param
 {
+    nfnn_tensor *B;
 };
 
 
@@ -27,6 +28,10 @@ struct nfnn_optimizer_adam_param
 typedef struct nfnn_optimizer_sgd nfnn_optimizer_sgd;
 struct nfnn_optimizer_sgd
 {
+    f32 WeightDecay; 
+    f32 Momentum; 
+    f32 Dampening;
+    bool Nesterov;
 };
 
 typedef struct nfnn_optimizer_adam nfnn_optimizer_adam;
@@ -64,7 +69,7 @@ struct nfnn_optimizer
 };
 
 
-static nfnn_optimizer *NfNN_Optimizer_SGD(nfnn_memory_arena *Mem, f32 LearningRate, u32 NumberOfWorkers)
+static nfnn_optimizer *NfNN_Optimizer_SGD(nfnn_memory_arena *Mem, f32 LearningRate, u32 NumberOfWorkers, f32 Momentum, f32 Dampening, f32 WeightDecay, bool Nesterov)
 {
     nfnn_optimizer *Result = NfNN_PushStruct(Mem, nfnn_optimizer);
     Result->Type = NFNN_OPTIMIZER_SGD;
@@ -72,6 +77,13 @@ static nfnn_optimizer *NfNN_Optimizer_SGD(nfnn_memory_arena *Mem, f32 LearningRa
     Result->First = 0;
     Result->Last = 0;
     Result->NumberOfWorkers = NumberOfWorkers;
+
+    // NOTE(luatil): All should default to 0
+    Result->SGD.Dampening = Dampening;
+    Result->SGD.WeightDecay = WeightDecay;
+    Result->SGD.Nesterov = Nesterov;
+    Result->SGD.Momentum = Momentum;
+
     return Result;
 }
 
@@ -121,6 +133,9 @@ static void NfNN_Optimizer_AddParam(nfnn_memory_arena *Mem, nfnn_optimizer *Opti
             nfnn_optimizer_param *Param = NfNN_PushStruct(Mem, nfnn_optimizer_param);
             Param->Tensor = T;
             Param->Next = 0;
+
+            Param->SGD.B = NfNN_ZeroesLike(Mem, T);
+
             NFNN_SLL_PushBack(Optimizer->First, Optimizer->Last, Param);
         } break;
         case NFNN_OPTIMIZER_ADAM:
@@ -137,10 +152,36 @@ static void NfNN_Optimizer_AddParam(nfnn_memory_arena *Mem, nfnn_optimizer *Opti
     }
 }
 
-static void NfNN_Optimizer_SGDUpdate(nfnn_tensor *T, nfnn_optimizer_sgd_param Param, f32 Lr)
+static void NfNN_Optimizer_SGDUpdate(nfnn_tensor *T, nfnn_optimizer_sgd_param Param, f32 Lr, f32 WeightDecay,  f32 Momentum, f32 Dampening, bool Nesterov, u32 Timestamp)
 {
     for (u32 I = 0; I < NfNN_Length(T); I++)
     {
+        if (WeightDecay != 0)
+        {
+            T->Gradient[I] += WeightDecay * T->Data[I];
+        }
+
+        if (Momentum != 0)
+        {
+            if (Timestamp > 1)
+            {
+                Param.B->Data[I] = Momentum * Param.B->Data[I] + (1.0f - Dampening) * T->Gradient[I];
+            }
+            else
+            {
+                Param.B->Data[I] = T->Gradient[I];
+            }
+            if (Nesterov)
+            {
+                T->Gradient[I] = T->Gradient[I] + Momentum * Param.B->Data[I];
+            }
+            else
+            {
+                T->Gradient[I] = Param.B->Data[I];
+            }
+
+        }
+
         T->Data[I] -= Lr * T->Gradient[I];
     }
 }
@@ -165,7 +206,9 @@ static void NfNN_Optimizer_Update(nfnn_optimizer *Optimizer, nfnn_optimizer_para
     {
         case NFNN_OPTIMIZER_SGD:
         {
-            NfNN_Optimizer_SGDUpdate(Param->Tensor, Param->SGD, Optimizer->LearningRate);
+            NfNN_Optimizer_SGDUpdate(Param->Tensor, Param->SGD, Optimizer->LearningRate, Optimizer->SGD.WeightDecay, 
+                                     Optimizer->SGD.Momentum, Optimizer->SGD.Dampening, Optimizer->SGD.Nesterov, 
+                                     Optimizer->Iteration);
         } break;
         case NFNN_OPTIMIZER_ADAM:
         {
@@ -182,6 +225,7 @@ static void NfNN_Optimizer_Step(nfnn_optimizer *Optimizer)
     {
         NfNN_Optimizer_Update(Optimizer, Param);
     }
+    Optimizer->Iteration++;
 }
 
 static void NfNN_Optimizer_ZeroGrad(nfnn_optimizer *Optimizer)

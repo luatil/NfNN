@@ -32,7 +32,7 @@ int main()
     nfnn_tensor *W2 = NfNN_Matrix(&Mem_P, &Random, 32, 10);
     nfnn_tensor *B2 = NfNN_Matrix(&Mem_P, &Random, 1, 10);
 
-    nfnn_optimizer *Optimizer = NfNN_Optimizer_SGD(&Mem_P, 0.01f, 1);
+    nfnn_optimizer *Optimizer = NfNN_Optimizer_SGD(&Mem_P, 0.01f, 1, 0.9, 0, 0, false);
     // nfnn_optimizer *Optimizer = NfNN_Optimizer_Adam(&Mem_P, 0, 1, 0, 0);
 
     NfNN_Optimizer_AddParam(&Mem_P, Optimizer, W1);
