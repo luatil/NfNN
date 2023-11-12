@@ -163,7 +163,7 @@ NfNN_ParameterServer_AddWorker(nfnn_memory_arena *Mem, nfnn_parameter_server *Se
 
     NFNN_ASSERT(SelectResult >= 0, "select failed");
 
-    for (nfnn_platform_socket SockIt = 1; SockIt < Server->MaxSocket; SockIt++)
+    for (nfnn_platform_socket SockIt = 1; SockIt <= Server->MaxSocket; SockIt++)
     {
         if (NFNN_FD_ISSET(SockIt, Server->Working))
         {
@@ -197,7 +197,6 @@ NfNN_ParameterServer_AddWorker(nfnn_memory_arena *Mem, nfnn_parameter_server *Se
 
                 NFNN_FD_SET(Peer, Server->Master);
                 Server->MaxSocket = (Peer > Server->MaxSocket) ? Peer : Server->MaxSocket;
-                return;
             }
             else
             {
