@@ -7,6 +7,9 @@
 #include "nfnn_tensor.h"
 #include "nfnn_platform.h"
 
+static u64 GlobalRead = 0;
+static u64 GlobalWrite = 0;
+
 typedef struct nfnn_socket nfnn_socket;
 struct nfnn_socket
 {
@@ -219,6 +222,7 @@ NfNN_Network_RecvSize(nfnn_platform_socket Sock, u32 SizeInBytes, char *Dst)
     while(RemainingBytes > 0)
     {
         int Recv = recv(Sock, Dst + BytesReceived, RemainingBytes, 0);
+        GlobalRead += Recv;
         if (Recv > 0 && Recv <= RemainingBytes)
         {
             BytesReceived += Recv;
@@ -244,6 +248,7 @@ NfNN_Network_SendAll(nfnn_platform_socket Sock, u32 SizeInBytes, char *Src)
     while (RemainingBytes > 0)
     {
         int Sent = send(Sock, Src + BytesSent, RemainingBytes, 0);
+        GlobalWrite += Sent;
         if (Sent > 0 && Sent <= RemainingBytes)
         {
             BytesSent += Sent;

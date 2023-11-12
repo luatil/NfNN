@@ -27,6 +27,13 @@ struct configuration
     u32 TrainBatchSize;
 };
 
+typedef struct accuracy_and_loss accuracy_and_loss;
+struct accuracy_and_loss
+{
+    f32 Accuracy;
+    f32 Loss;
+};
+
 static void
 PrintConfiguration(configuration Config)
 {
@@ -102,10 +109,11 @@ static nfnn_tensor *Forward(nfnn_memory_arena *Mem, model Model, nfnn_tensor *In
     return Result;
 }
 
-static f32 CalculateAccuracy(nfnn_memory_arena *Mem, model Model, nfnn_dataloader_mnist *DataLoader)
+static accuracy_and_loss CalculateAccuracyAndLoss(nfnn_memory_arena *Mem, model Model, nfnn_dataloader_mnist *DataLoader)
 {
     u32 Correct = 0;
     u32 Total = 0;
+    f32 AverageLoss = 0.0f;
     for (nfnn_dataloader_batch_mnist *It = NfNN_DataLoader_Mnist_NextBatch(DataLoader);
          It != 0;
          It = NfNN_DataLoader_Mnist_NextBatch(DataLoader))
@@ -114,6 +122,9 @@ static f32 CalculateAccuracy(nfnn_memory_arena *Mem, model Model, nfnn_dataloade
 
         nfnn_tensor *Outputs = Forward(Mem, Model, It->Images);
         nfnn_tensor *Predicted = NfNN_Argmax(Mem, Outputs, 1);
+        nfnn_tensor *Loss = NfNN_NLLLoss(Mem, Outputs, It->Labels);
+
+        AverageLoss += NfNN_Item(Loss);
 
         Total += NfNN_Length(It->Labels);
         Correct += (u32)NfNN_Item(NfNN_SumAll(Mem, NfNN_Equal(Mem, Predicted, It->Labels)));
@@ -122,8 +133,11 @@ static f32 CalculateAccuracy(nfnn_memory_arena *Mem, model Model, nfnn_dataloade
     }
 
     f32 Accuracy = 100.0 * (f32)Correct / (f32)Total;
+    AverageLoss /= Total;
     // u32 NumberOfBatches = NfNN_DataLoader_Mnist_NumberOfBatches(DataLoader);
-    f32 Result = Accuracy;
+    accuracy_and_loss Result = {0};
+    Result.Accuracy = Accuracy;
+    Result.Loss = AverageLoss;
     return Result;
 }
 
@@ -150,6 +164,8 @@ RunAsServer(configuration Config)
      * end for
      *
      */
+
+    nfnn_time Start = NfNN_Time_CurrentTime();
 
     nfnn_memory_arena Mem_P = {0};
     NfNN_MemoryArena_Init(&Mem_P, MB(100));
@@ -185,7 +201,7 @@ RunAsServer(configuration Config)
     NfNN_ParameterServer_BroadcastWeights(&Mem_T, Server, Model.W2);
     NfNN_ParameterServer_BroadcastWeights(&Mem_T, Server, Model.B2);
     
-    for (u32 T = 0; T <= Config.NumberOfUpdates; T++)
+    for (u32 T = 0; T < Config.NumberOfUpdates; T++)
     {
         NfNN_MemoryArena_TempInit(&Mem_T);
 
@@ -207,11 +223,22 @@ RunAsServer(configuration Config)
 
         if (T % 1000 == 0)
         {
-            f32 Accuracy = CalculateAccuracy(&Mem_T, Model, ValidationLoader);
-            printf("Iteration %d: Validation Accuracy: %f\n", T, Accuracy);
+            accuracy_and_loss AccuracyAndLoss = CalculateAccuracyAndLoss(&Mem_T, Model, ValidationLoader);
+            printf("Iteration %d: Validation Accuracy: %f\n", T, AccuracyAndLoss.Accuracy);
         }
         NfNN_MemoryArena_TempClear(&Mem_T);
     }
+
+    nfnn_time End = NfNN_Time_CurrentTime();
+    nfnn_time_diff Diff = NfNN_Time_Diff(Start, End);
+
+    accuracy_and_loss AccuracyAndLoss = CalculateAccuracyAndLoss(&Mem_T, Model, ValidationLoader);
+    printf("Final Results:\n");
+    printf("\tValidation Accuracy: %f\n", AccuracyAndLoss.Accuracy);
+    printf("\tValidation Loss: %f\n", AccuracyAndLoss.Loss);
+    printf("\tTime(s): %ld\n", Diff.Seconds);
+    printf("\tSent Bytes: %ld\n", GlobalWrite);
+    printf("\tRecv Bytes: %ld\n", GlobalRead);
 
     NfNN_Network_DestroyInterface(Interface);
 }
@@ -253,7 +280,7 @@ RunAsWorker(configuration Config)
     nfnn_datasets_mnist *TrainDataset = NfNN_Datasets_Mnist_Split(&Mem_P, FullTrainDataset, 0, TrainingNumber);
     nfnn_dataloader_mnist *TrainLoader = NfNN_Dataloader_Mnist_Create(&Mem_P, TrainDataset, 32, &Random);
 
-    for (u32 IterationCount = 0; IterationCount <= Config.NumberOfUpdates;)
+    for (u32 IterationCount = 0; IterationCount < Config.NumberOfUpdates;)
     {
         for (nfnn_dataloader_batch_mnist *It = NfNN_DataLoader_Mnist_NextBatch(TrainLoader);
              It != 0 && IterationCount < Config.NumberOfUpdates;

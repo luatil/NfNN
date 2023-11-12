@@ -8,6 +8,7 @@
 #include "nfnn_autograd.h"
 #include "nfnn_optimizer.h"
 #include "nfnn_network.h"
+#include "nfnn_time.h"
 
 
 #endif // NFNN_H
