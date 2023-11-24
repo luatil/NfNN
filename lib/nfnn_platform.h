@@ -38,7 +38,7 @@ typedef SOCKET nfnn_platform_socket;
 #define NFNN_CLOSESOCKET(s) close(s)
 typedef int nfnn_platform_socket;
 #define NFNN_GETSOCKETERRNO() (errno)
-#define NFNN_PLATFORM_SLEEP(_seconds) sleep(_seconds)
+#define NFNN_PLATFORM_SLEEP(_seconds) usleep((_seconds * 1000) * 1000)
 #define NFNN_PRINT_WORKING_DIR()                                                                                       \
     do                                                                                                                 \
     {                                                                                                                  \

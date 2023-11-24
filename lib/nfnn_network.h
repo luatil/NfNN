@@ -2,6 +2,7 @@
 #define NFNN_NETWORK_H
 
 #include "nfnn_macro.h"
+#include "nfnn_math.h"
 #include "nfnn_memory_arena.h"
 #include "nfnn_platform.h"
 #include "nfnn_tensor.h"
