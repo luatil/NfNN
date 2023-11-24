@@ -9,6 +9,9 @@ out_dir="build"
 mkdir -p "$out_dir"
 # cd "$out_dir" || exit
 
+echo "Build count lines"
+gcc $opts -I"$includes" misc/count_lines.c -o "$out_dir"/count_lines $link_ops
+
 echo "Build tests"
 gcc $opts -I"$includes" tests/tests.c -o "$out_dir"/tests $link_ops
 
@@ -26,6 +29,10 @@ gcc $opts -I"$includes" examples/mnist/mnist_sync_parameter_server/src/mnist_syn
 
 echo "Build examples - mnist async parameter server"
 gcc $opts -I"$includes" examples/mnist/mnist_async_parameter_server/src/mnist_async_parameter_server.c -o "$out_dir"/mnist_async_parameter_server $link_ops
+
+pushd "$out_dir"
+./count_lines .. > ../misc/stats.txt
+popd
 
 # cd ..
 

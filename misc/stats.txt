@@ -1,0 +1,28 @@
+Counting lines for ..
+Total files: 24
+Total lines: 5278
+
+******************** |  733 | tests.c
+*****************    |  650 | nfnn_math.h
+*************        |  467 | mnist_sync_parameter_server.c
+************         |  461 | mnist_async_parameter_server.c
+***********          |  403 | nfnn_network.h
+**********           |  372 | nfnn_ops.h
+********             |  294 | nfnn_mnist.h
+*******              |  258 | nfnn_tensor.h
+*******              |  241 | nfnn_optimizer.h
+*******              |  239 | nfnn_autograd.h
+******               |  224 | count_lines.c
+****                 |  149 | mnist_single_device.c
+***                  |  102 | nfnn_macro.h
+***                  |  101 | xor.c
+***                  |   98 | nfnn_random.h
+***                  |   82 | nfnn_memory_arena.h
+***                  |   82 | nfnn_time.h
+**                   |   76 | pytorch_mnist.py
+**                   |   73 | nfnn_platform.h
+**                   |   59 | mnist_test_dataloader.c
+**                   |   40 | pytorch_xor_adam.py
+*                    |   36 | pytorch_xor.py
+*                    |   24 | nfnn_types.h
+*                    |   14 | nfnn.h
