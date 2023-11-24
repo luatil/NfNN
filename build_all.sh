@@ -31,7 +31,12 @@ echo "Build examples - mnist async parameter server"
 gcc $opts -I"$includes" examples/mnist/mnist_async_parameter_server/src/mnist_async_parameter_server.c -o "$out_dir"/mnist_async_parameter_server $link_ops
 
 pushd "$out_dir"
-./count_lines .. > ../misc/stats.txt
+echo "All files" > ../misc/stats.txt
+./count_lines .. >> ../misc/stats.txt
+echo "Main lib" >> ../misc/stats.txt
+./count_lines ../lib >> ../misc/stats.txt
+echo "Examples" >> ../misc/stats.txt
+./count_lines ../examples >> ../misc/stats.txt
 popd
 
 # cd ..
