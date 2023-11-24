@@ -1,79 +1,67 @@
 #ifndef NFNN_MATH_H
 #define NFNN_MATH_H
 
-#include "nfnn_types.h"
 #include "nfnn_macro.h"
 #include "nfnn_memory_arena.h"
+#include "nfnn_types.h"
 #include <math.h>
 
-static f32
-NfNN_Math_Single_Sqrt_f32(f32 X)
+static f32 NfNN_Math_Single_Sqrt_f32(f32 X)
 {
     return sqrtf(X);
 }
 
-static f32
-NfNN_Math_Single_Log_f32(f32 X)
+static f32 NfNN_Math_Single_Log_f32(f32 X)
 {
     return logf(X);
 }
 
-static f32
-NfNN_Math_Single_Abs_f32(f32 X)
+static f32 NfNN_Math_Single_Abs_f32(f32 X)
 {
     return fabsf(X);
 }
 
-static f32
-NfNN_Math_Single_Exp_f32(f32 X)
+static f32 NfNN_Math_Single_Exp_f32(f32 X)
 {
     return expf(X);
 }
 
-static f32
-NfNN_Math_Single_Max_f32(f32 X, f32 Y)
+static f32 NfNN_Math_Single_Max_f32(f32 X, f32 Y)
 {
     return X > Y ? X : Y;
 }
 
-static f32
-NfNN_Math_Single_Sigmoid_f32(f32 X)
+static f32 NfNN_Math_Single_Sigmoid_f32(f32 X)
 {
     return 1.0f / (1.0f + NfNN_Math_Single_Exp_f32(-X));
 }
 
-static f32
-NfNN_Math_Single_SigmoidD_f32(f32 X)
+static f32 NfNN_Math_Single_SigmoidD_f32(f32 X)
 {
     return NfNN_Math_Single_Sigmoid_f32(X) * (1.0f - NfNN_Math_Single_Sigmoid_f32(X));
 }
 
-static f32
-NfNN_Math_Single_ReLU_f32(f32 X)
+static f32 NfNN_Math_Single_ReLU_f32(f32 X)
 {
     return X > 0.0f ? X : 0.0f;
 }
 
-static f32
-NfNN_Math_Single_ReLUD_f32(f32 X)
+static f32 NfNN_Math_Single_ReLUD_f32(f32 X)
 {
     return X > 0.0f ? 1.0f : 0.0f;
 }
 
-static f32
-NfNN_Math_Single_Tanh_f32(f32 X)
+static f32 NfNN_Math_Single_Tanh_f32(f32 X)
 {
     return tanhf(X);
 }
 
-static f32
-NfNN_Math_Single_TanhD_f32(f32 X)
+static f32 NfNN_Math_Single_TanhD_f32(f32 X)
 {
     return 1.0f - NfNN_Math_Single_Tanh_f32(X) * NfNN_Math_Single_Tanh_f32(X);
 }
 
-static void
-NfNN_Math_Exp_f32(f32 *In, u32 NumberOfElements, f32 *Out)
+static void NfNN_Math_Exp_f32(f32 *In, u32 NumberOfElements, f32 *Out)
 {
     for (u32 Index = 0; Index < NumberOfElements; ++Index)
     {
@@ -81,8 +69,7 @@ NfNN_Math_Exp_f32(f32 *In, u32 NumberOfElements, f32 *Out)
     }
 }
 
-static void
-NfNN_Math_Sigmoid_f32(f32 *In, u32 NumberOfElements, f32 *Out)
+static void NfNN_Math_Sigmoid_f32(f32 *In, u32 NumberOfElements, f32 *Out)
 {
     for (u32 Index = 0; Index < NumberOfElements; ++Index)
     {
@@ -90,8 +77,7 @@ NfNN_Math_Sigmoid_f32(f32 *In, u32 NumberOfElements, f32 *Out)
     }
 }
 
-static void
-NfNN_Math_SigmoidD_f32(f32 *Grad, f32 *In, u32 N, f32 *Out)
+static void NfNN_Math_SigmoidD_f32(f32 *Grad, f32 *In, u32 N, f32 *Out)
 {
     for (u32 Index = 0; Index < N; ++Index)
     {
@@ -99,8 +85,7 @@ NfNN_Math_SigmoidD_f32(f32 *Grad, f32 *In, u32 N, f32 *Out)
     }
 }
 
-static void
-NfNN_Math_FillConstant_f32(f32 *Data, u32 NumberOfElements, f32 Constant)
+static void NfNN_Math_FillConstant_f32(f32 *Data, u32 NumberOfElements, f32 Constant)
 {
     for (u32 Index = 0; Index < NumberOfElements; ++Index)
     {
@@ -108,8 +93,7 @@ NfNN_Math_FillConstant_f32(f32 *Data, u32 NumberOfElements, f32 Constant)
     }
 }
 
-static void
-NfNN_Math_LinSpace_f32(f32 *Data, u32 NumberOfElements, f32 Lower, f32 Upper)
+static void NfNN_Math_LinSpace_f32(f32 *Data, u32 NumberOfElements, f32 Lower, f32 Upper)
 {
     f32 StepSize = (Upper - Lower) / (f32)NumberOfElements;
     for (u32 Index = 0; Index < NumberOfElements; ++Index)
@@ -118,8 +102,7 @@ NfNN_Math_LinSpace_f32(f32 *Data, u32 NumberOfElements, f32 Lower, f32 Upper)
     }
 }
 
-static void
-NfNN_Math_MultiplyByConstant_f32(f32 *In, u32 NumberOfElements, f32 Constant, f32 *Out)
+static void NfNN_Math_MultiplyByConstant_f32(f32 *In, u32 NumberOfElements, f32 Constant, f32 *Out)
 {
     for (u32 Index = 0; Index < NumberOfElements; ++Index)
     {
@@ -127,8 +110,7 @@ NfNN_Math_MultiplyByConstant_f32(f32 *In, u32 NumberOfElements, f32 Constant, f3
     }
 }
 
-static void
-NfNN_Math_AddByConstant_f32(f32 *In, u32 NumberOfElements, f32 Constant, f32 *Out)
+static void NfNN_Math_AddByConstant_f32(f32 *In, u32 NumberOfElements, f32 Constant, f32 *Out)
 {
     for (u32 Index = 0; Index < NumberOfElements; ++Index)
     {
@@ -136,8 +118,7 @@ NfNN_Math_AddByConstant_f32(f32 *In, u32 NumberOfElements, f32 Constant, f32 *Ou
     }
 }
 
-static void
-NfNN_Math_Add_f32(f32 *A, f32 *B, u32 NumberOfElements, f32 *Out)
+static void NfNN_Math_Add_f32(f32 *A, f32 *B, u32 NumberOfElements, f32 *Out)
 {
     for (u32 Index = 0; Index < NumberOfElements; ++Index)
     {
@@ -145,8 +126,7 @@ NfNN_Math_Add_f32(f32 *A, f32 *B, u32 NumberOfElements, f32 *Out)
     }
 }
 
-static void
-NfNN_Math_BroadcastAdd_f32(f32 *A, u32 A_X, u32 A_Y, f32 *B, u32 B_X, u32 B_Y, f32 *Out)
+static void NfNN_Math_BroadcastAdd_f32(f32 *A, u32 A_X, u32 A_Y, f32 *B, u32 B_X, u32 B_Y, f32 *Out)
 {
     if (A_X == B_X && A_Y == B_Y)
     {
@@ -188,8 +168,7 @@ NfNN_Math_BroadcastAdd_f32(f32 *A, u32 A_X, u32 A_Y, f32 *B, u32 B_X, u32 B_Y, f
     }
 }
 
-static void
-NfNN_Math_Sub_f32(f32 *A, f32 *B, u32 NumberOfElements, f32 *Out)
+static void NfNN_Math_Sub_f32(f32 *A, f32 *B, u32 NumberOfElements, f32 *Out)
 {
     for (u32 Index = 0; Index < NumberOfElements; ++Index)
     {
@@ -197,8 +176,7 @@ NfNN_Math_Sub_f32(f32 *A, f32 *B, u32 NumberOfElements, f32 *Out)
     }
 }
 
-static void
-NfNN_Math_Hadamard_f32(f32 *A, f32 *B, u32 NumberOfElements, f32 *Out)
+static void NfNN_Math_Hadamard_f32(f32 *A, f32 *B, u32 NumberOfElements, f32 *Out)
 {
     for (u32 Index = 0; Index < NumberOfElements; ++Index)
     {
@@ -207,8 +185,7 @@ NfNN_Math_Hadamard_f32(f32 *A, f32 *B, u32 NumberOfElements, f32 *Out)
 }
 
 // Out = Out + Mul * Add
-static void
-NfNN_Math_Fmadd_f32(f32 *Mul, f32 *Add, u32 NumberOfElements, f32 *Out)
+static void NfNN_Math_Fmadd_f32(f32 *Mul, f32 *Add, u32 NumberOfElements, f32 *Out)
 {
     for (u32 Index = 0; Index < NumberOfElements; ++Index)
     {
@@ -217,8 +194,7 @@ NfNN_Math_Fmadd_f32(f32 *Mul, f32 *Add, u32 NumberOfElements, f32 *Out)
 }
 
 // Out = Out + Mul * Add
-static void
-NfNN_Math_FmaddConst_f32(f32 *Mul, f32 Const, u32 NumberOfElements, f32 *Out)
+static void NfNN_Math_FmaddConst_f32(f32 *Mul, f32 Const, u32 NumberOfElements, f32 *Out)
 {
     for (u32 Index = 0; Index < NumberOfElements; ++Index)
     {
@@ -226,8 +202,7 @@ NfNN_Math_FmaddConst_f32(f32 *Mul, f32 Const, u32 NumberOfElements, f32 *Out)
     }
 }
 
-static void
-NfNN_Math_MatMul_f32(f32 *A, f32 *B, u32 RowsA, u32 ColumnsA, u32 ColumnsB, f32 *Out)
+static void NfNN_Math_MatMul_f32(f32 *A, f32 *B, u32 RowsA, u32 ColumnsA, u32 ColumnsB, f32 *Out)
 {
     for (u32 Row = 0; Row < RowsA; ++Row)
     {
@@ -243,8 +218,7 @@ NfNN_Math_MatMul_f32(f32 *A, f32 *B, u32 RowsA, u32 ColumnsA, u32 ColumnsB, f32 
     }
 }
 
-static void
-NfNN_Math_Transpose_f32(f32 *In, u32 Rows, u32 Columns, f32 *Out)
+static void NfNN_Math_Transpose_f32(f32 *In, u32 Rows, u32 Columns, f32 *Out)
 {
     for (u32 Row = 0; Row < Rows; ++Row)
     {
@@ -256,8 +230,7 @@ NfNN_Math_Transpose_f32(f32 *In, u32 Rows, u32 Columns, f32 *Out)
 }
 
 // Computes Out = A^T * B
-static void
-NfNN_Math_MatMulTransposeLeft_f32(f32 *A, f32 *B, u32 RowsA, u32 ColumnsA, u32 RowsB, f32 *Out)
+static void NfNN_Math_MatMulTransposeLeft_f32(f32 *A, f32 *B, u32 RowsA, u32 ColumnsA, u32 RowsB, f32 *Out)
 {
     for (u32 Row = 0; Row < RowsA; ++Row)
     {
@@ -273,8 +246,7 @@ NfNN_Math_MatMulTransposeLeft_f32(f32 *A, f32 *B, u32 RowsA, u32 ColumnsA, u32 R
     }
 }
 
-static bool
-NfNN_Math_CompareMemory_f32(f32 *A, f32 *B, u32 NumberOfElements, f32 Eps)
+static bool NfNN_Math_CompareMemory_f32(f32 *A, f32 *B, u32 NumberOfElements, f32 Eps)
 {
     for (u32 Index = 0; Index < NumberOfElements; ++Index)
     {
@@ -329,8 +301,7 @@ NfNN_Math_MatmulAddTransposeLeft_f32(f32 *A, f32 *B, u32 L, u32 M, u32 R, f32 *C
     }
 }
 
-static void
-NfNN_Math_Tanh_f32(f32 *A, u32 N, f32 *Out)
+static void NfNN_Math_Tanh_f32(f32 *A, u32 N, f32 *Out)
 {
     for (u32 Index = 0; Index < N; ++Index)
     {
@@ -338,8 +309,7 @@ NfNN_Math_Tanh_f32(f32 *A, u32 N, f32 *Out)
     }
 }
 
-static void
-NfNN_Math_TanhD_f32(f32 *Grad, f32 *In, u32 N, f32 *Out)
+static void NfNN_Math_TanhD_f32(f32 *Grad, f32 *In, u32 N, f32 *Out)
 {
     for (u32 Index = 0; Index < N; ++Index)
     {
@@ -347,8 +317,7 @@ NfNN_Math_TanhD_f32(f32 *Grad, f32 *In, u32 N, f32 *Out)
     }
 }
 
-static void
-NfNN_Math_ReLU_f32(f32 *A, u32 N, f32 *Out)
+static void NfNN_Math_ReLU_f32(f32 *A, u32 N, f32 *Out)
 {
     for (u32 Index = 0; Index < N; ++Index)
     {
@@ -356,8 +325,7 @@ NfNN_Math_ReLU_f32(f32 *A, u32 N, f32 *Out)
     }
 }
 
-static void
-NfNN_Math_ReLUD_f32(f32 *Grad, f32 *In, u32 N, f32 *Out)
+static void NfNN_Math_ReLUD_f32(f32 *Grad, f32 *In, u32 N, f32 *Out)
 {
     for (u32 Index = 0; Index < N; ++Index)
     {
@@ -365,8 +333,7 @@ NfNN_Math_ReLUD_f32(f32 *Grad, f32 *In, u32 N, f32 *Out)
     }
 }
 
-static void
-NfNN_Math_Square_f32(f32 *In, u32 N, f32 *Out)
+static void NfNN_Math_Square_f32(f32 *In, u32 N, f32 *Out)
 {
     for (u32 Index = 0; Index < N; ++Index)
     {
@@ -374,8 +341,7 @@ NfNN_Math_Square_f32(f32 *In, u32 N, f32 *Out)
     }
 }
 
-static void
-NfNN_Math_SquareD_f32(f32 *Grad, f32 *In, u32 N, f32 *Out)
+static void NfNN_Math_SquareD_f32(f32 *Grad, f32 *In, u32 N, f32 *Out)
 {
     for (u32 Index = 0; Index < N; ++Index)
     {
@@ -383,8 +349,7 @@ NfNN_Math_SquareD_f32(f32 *Grad, f32 *In, u32 N, f32 *Out)
     }
 }
 
-static void
-NfNN_Math_SumAllAdd_f32(f32 *Grad, u32 N, f32 *Out)
+static void NfNN_Math_SumAllAdd_f32(f32 *Grad, u32 N, f32 *Out)
 {
     for (u32 Index = 0; Index < N; ++Index)
     {
@@ -392,8 +357,7 @@ NfNN_Math_SumAllAdd_f32(f32 *Grad, u32 N, f32 *Out)
     }
 }
 
-static void
-NfNN_Math_SumXAdd_f32(f32 *In, u32 In_X, u32 In_Y, u32 Out_X, u32 Out_Y, f32 *Out)
+static void NfNN_Math_SumXAdd_f32(f32 *In, u32 In_X, u32 In_Y, u32 Out_X, u32 Out_Y, f32 *Out)
 {
 
     NFNN_ASSERT(Out_X == 1, "In_X must be equal to Out_X");
@@ -411,8 +375,7 @@ NfNN_Math_SumXAdd_f32(f32 *In, u32 In_X, u32 In_Y, u32 Out_X, u32 Out_Y, f32 *Ou
     }
 }
 
-static void
-NfNN_Math_SumYAdd_f32(f32 *In, u32 In_X, u32 In_Y, u32 Out_X, u32 Out_Y, f32 *Out)
+static void NfNN_Math_SumYAdd_f32(f32 *In, u32 In_X, u32 In_Y, u32 Out_X, u32 Out_Y, f32 *Out)
 {
     NFNN_ASSERT(Out_Y == 1, "In_X must be equal to Out_X");
     NFNN_ASSERT(In_X == Out_X, "In_X must be equal to Out_X");
@@ -429,8 +392,7 @@ NfNN_Math_SumYAdd_f32(f32 *In, u32 In_X, u32 In_Y, u32 Out_X, u32 Out_Y, f32 *Ou
     }
 }
 
-static void
-NfNN_Math_Log_f32(f32 *In, u32 N, f32 *Out)
+static void NfNN_Math_Log_f32(f32 *In, u32 N, f32 *Out)
 {
     for (u32 Index = 0; Index < N; ++Index)
     {
@@ -438,8 +400,7 @@ NfNN_Math_Log_f32(f32 *In, u32 N, f32 *Out)
     }
 }
 
-static void
-NfNN_Math_SoftMax_f32(f32 *In, u32 X, u32 Y, u32 Dim, f32 *Out)
+static void NfNN_Math_SoftMax_f32(f32 *In, u32 X, u32 Y, u32 Dim, f32 *Out)
 {
 
     // NOTE(luatil): For numerical stability subtract the maximum value
@@ -490,15 +451,13 @@ NfNN_Math_SoftMax_f32(f32 *In, u32 X, u32 Y, u32 Dim, f32 *Out)
     }
 }
 
-static void
-NfNN_Math_LogSoftmax_f32(f32 *In, u32 X, u32 Y, u32 Dim, f32 *Out)
+static void NfNN_Math_LogSoftmax_f32(f32 *In, u32 X, u32 Y, u32 Dim, f32 *Out)
 {
     NfNN_Math_SoftMax_f32(In, X, Y, Dim, Out);
     NfNN_Math_Log_f32(Out, X * Y, Out);
 }
 
-static void
-NfNN_Math_PrintArray(f32 *In, u32 X, u32 Y)
+static void NfNN_Math_PrintArray(f32 *In, u32 X, u32 Y)
 {
     for (u32 I = 0; I < X; I++)
     {
@@ -517,8 +476,8 @@ NfNN_Math_PrintArray(f32 *In, u32 X, u32 Y)
     }
 }
 
-static void
-NfNN_Math_LogSoftmaxD_f32(nfnn_memory_arena *Mem, f32 *Grad, f32 *X, u32 X_Dim, u32 Y_Dim, u32 Dim, f32 *Out)
+static void NfNN_Math_LogSoftmaxD_f32(nfnn_memory_arena *Mem, f32 *Grad, f32 *X, u32 X_Dim, u32 Y_Dim, u32 Dim,
+                                      f32 *Out)
 {
     f32 *Softmax = NfNN_PushArray(Mem, f32, X_Dim * Y_Dim);
 
@@ -563,8 +522,7 @@ NfNN_Math_LogSoftmaxD_f32(nfnn_memory_arena *Mem, f32 *Grad, f32 *X, u32 X_Dim, 
     }
 }
 
-static void
-NfNN_Math_NLLLoss_Mean_f32(f32 *A, f32 *Indexes, u32 X, u32 Y, f32 *Out)
+static void NfNN_Math_NLLLoss_Mean_f32(f32 *A, f32 *Indexes, u32 X, u32 Y, f32 *Out)
 {
     // NOTE(luatil): Might also want to handle different types of reductions
     // see Pytorch's documentation on reduction=mean | sum | none
@@ -576,8 +534,7 @@ NfNN_Math_NLLLoss_Mean_f32(f32 *A, f32 *Indexes, u32 X, u32 Y, f32 *Out)
     Out[0] /= (f32)X;
 }
 
-static void
-NfNN_Math_NLLLossD_Mean_f32(f32 *Grad, f32 *X, f32 *Indexes, u32 X_Dim, u32 Y_Dim, f32 *Out)
+static void NfNN_Math_NLLLossD_Mean_f32(f32 *Grad, f32 *X, f32 *Indexes, u32 X_Dim, u32 Y_Dim, f32 *Out)
 {
     for (u32 I = 0; I < X_Dim; I++)
     {
@@ -588,8 +545,7 @@ NfNN_Math_NLLLossD_Mean_f32(f32 *Grad, f32 *X, f32 *Indexes, u32 X_Dim, u32 Y_Di
     }
 }
 
-static u32
-NfNN_Math_BigEndianToLittleEndian_u32(u32 X)
+static u32 NfNN_Math_BigEndianToLittleEndian_u32(u32 X)
 {
     u32 Byte1 = X & 0xFF000000;
     u32 Byte2 = X & 0x00FF0000;
@@ -599,18 +555,17 @@ NfNN_Math_BigEndianToLittleEndian_u32(u32 X)
     return (Byte4 << 24) | (Byte3 << 8) | (Byte2 >> 8) | (Byte1 >> 24);
 }
 
-static void
-NfNN_Math_Argmax(f32 *In, u32 X, u32 Y, u32 Dim, f32 *Out)
+static void NfNN_Math_Argmax(f32 *In, u32 X, u32 Y, u32 Dim, f32 *Out)
 {
-    if(Dim == 1)
+    if (Dim == 1)
     {
-        for(u32 I = 0; I < X; I++)
+        for (u32 I = 0; I < X; I++)
         {
             f32 Max = In[I * Y];
             u32 Index = 0;
-            for(u32 J = 1; J < Y; J++)
+            for (u32 J = 1; J < Y; J++)
             {
-                if(In[I * Y + J] > Max)
+                if (In[I * Y + J] > Max)
                 {
                     Max = In[I * Y + J];
                     Index = J;
@@ -619,7 +574,7 @@ NfNN_Math_Argmax(f32 *In, u32 X, u32 Y, u32 Dim, f32 *Out)
             Out[I] = (f32)Index;
         }
     }
-    else if(Dim == 0)
+    else if (Dim == 0)
     {
         NFNN_NOT_IMPLEMENTED();
     }
@@ -629,19 +584,17 @@ NfNN_Math_Argmax(f32 *In, u32 X, u32 Y, u32 Dim, f32 *Out)
     }
 }
 
-static void
-NfNN_Math_Close_f32(f32 *A, f32 *B, u32 N, f32 *Out, f32 Eps)
+static void NfNN_Math_Close_f32(f32 *A, f32 *B, u32 N, f32 *Out, f32 Eps)
 {
-    for(u32 I = 0; I < N; I++)
+    for (u32 I = 0; I < N; I++)
     {
         Out[I] = (NfNN_Math_Single_Abs_f32(A[I] - B[I]) < Eps) * 1.0f;
     }
 }
 
-static void
-NfNN_Math_Zero_f32(f32 *A, u32 N)
+static void NfNN_Math_Zero_f32(f32 *A, u32 N)
 {
-    for(u32 I = 0; I < N; I++)
+    for (u32 I = 0; I < N; I++)
     {
         A[I] = 0.0f;
     }

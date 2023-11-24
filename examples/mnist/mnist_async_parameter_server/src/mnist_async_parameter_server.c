@@ -34,8 +34,7 @@ struct accuracy_and_loss
     f32 Loss;
 };
 
-static void
-PrintConfiguration(configuration Config)
+static void PrintConfiguration(configuration Config)
 {
     printf("Configuration:\n");
     printf("  Seed: %u\n", Config.Seed);
@@ -52,8 +51,7 @@ PrintConfiguration(configuration Config)
     printf("  Training Batch Size: %u\n", Config.TrainBatchSize);
 }
 
-static void
-PrintHelp(char *Exe)
+static void PrintHelp(char *Exe)
 {
     printf("Usage: %s <options>\n", Exe);
     printf("\nOptions:\n");
@@ -109,13 +107,13 @@ static nfnn_tensor *Forward(nfnn_memory_arena *Mem, model Model, nfnn_tensor *In
     return Result;
 }
 
-static accuracy_and_loss CalculateAccuracyAndLoss(nfnn_memory_arena *Mem, model Model, nfnn_dataloader_mnist *DataLoader)
+static accuracy_and_loss CalculateAccuracyAndLoss(nfnn_memory_arena *Mem, model Model,
+                                                  nfnn_dataloader_mnist *DataLoader)
 {
     u32 Correct = 0;
     u32 Total = 0;
     f32 AverageLoss = 0.0f;
-    for (nfnn_dataloader_batch_mnist *It = NfNN_DataLoader_Mnist_NextBatch(DataLoader);
-         It != 0;
+    for (nfnn_dataloader_batch_mnist *It = NfNN_DataLoader_Mnist_NextBatch(DataLoader); It != 0;
          It = NfNN_DataLoader_Mnist_NextBatch(DataLoader))
     {
         NfNN_MemoryArena_TempInit(Mem);
@@ -141,16 +139,15 @@ static accuracy_and_loss CalculateAccuracyAndLoss(nfnn_memory_arena *Mem, model 
     return Result;
 }
 
-static void
-RunAsServer(configuration Config)
+static void RunAsServer(configuration Config)
 {
     /**
      * Parameter server program:
-     * initial model w_0, learning rate lr 
+     * initial model w_0, learning rate lr
      * w <- w_0
      * for t <- 0, 1, 2, ... do
      *    if received gradients (g_i_s) from worker i, with delay of s steps then
-     *    w <- w - lr * g_i_s 
+     *    w <- w - lr * g_i_s
      *    Send w to worker i
      * end for
      *
@@ -181,13 +178,16 @@ RunAsServer(configuration Config)
     model Model = CreateModel(&Mem_P, &Random);
     nfnn_optimizer *Optimizer = CreateOptimizer(&Mem_P, Model, Config.LearningRate, 1);
 
-    nfnn_datasets_mnist *FullTrainDataset = NfNN_Datasets_MNIST_Load(&Mem_P, Config.TrainingImagesFilePath, Config.TrainLabelsFilePath, 60000);
+    nfnn_datasets_mnist *FullTrainDataset =
+        NfNN_Datasets_MNIST_Load(&Mem_P, Config.TrainingImagesFilePath, Config.TrainLabelsFilePath, 60000);
 
     u32 TrainingNumber = (u32)(60000 * Config.TrainingSplit);
     u32 ValidationNumber = 60000 - TrainingNumber;
 
-    nfnn_datasets_mnist *ValidationDataset = NfNN_Datasets_Mnist_Split(&Mem_P, FullTrainDataset, TrainingNumber, ValidationNumber);
-    nfnn_dataloader_mnist *ValidationLoader = NfNN_Dataloader_Mnist_Create(&Mem_P, ValidationDataset, Config.ValidationBatchSize, 0);
+    nfnn_datasets_mnist *ValidationDataset =
+        NfNN_Datasets_Mnist_Split(&Mem_P, FullTrainDataset, TrainingNumber, ValidationNumber);
+    nfnn_dataloader_mnist *ValidationLoader =
+        NfNN_Dataloader_Mnist_Create(&Mem_P, ValidationDataset, Config.ValidationBatchSize, 0);
 
     nfnn_parameter_server *Server = NfNN_ParameterServer_Create(&Mem_P, Config.IpAddress, Config.Port);
 
@@ -200,7 +200,7 @@ RunAsServer(configuration Config)
     NfNN_ParameterServer_BroadcastWeights(&Mem_T, Server, Model.B1);
     NfNN_ParameterServer_BroadcastWeights(&Mem_T, Server, Model.W2);
     NfNN_ParameterServer_BroadcastWeights(&Mem_T, Server, Model.B2);
-    
+
     for (u32 T = 0; T < Config.NumberOfUpdates; T++)
     {
         NfNN_MemoryArena_TempInit(&Mem_T);
@@ -243,8 +243,7 @@ RunAsServer(configuration Config)
     NfNN_Network_DestroyInterface(Interface);
 }
 
-static void
-RunAsWorker(configuration Config)
+static void RunAsWorker(configuration Config)
 {
     /**
      * Program for the ith worker:
@@ -273,7 +272,8 @@ RunAsWorker(configuration Config)
     // Connect to parameter server
     nfnn_socket *Socket = NfNN_Network_TCPConnect(&Mem_P, Config.IpAddress, Config.Port);
 
-    nfnn_datasets_mnist *FullTrainDataset = NfNN_Datasets_MNIST_Load(&Mem_P, Config.TrainingImagesFilePath, Config.TrainLabelsFilePath, 60000);
+    nfnn_datasets_mnist *FullTrainDataset =
+        NfNN_Datasets_MNIST_Load(&Mem_P, Config.TrainingImagesFilePath, Config.TrainLabelsFilePath, 60000);
 
     u32 TrainingNumber = (u32)(60000 * Config.TrainingSplit);
 
@@ -283,8 +283,7 @@ RunAsWorker(configuration Config)
     for (u32 IterationCount = 0; IterationCount < Config.NumberOfUpdates;)
     {
         for (nfnn_dataloader_batch_mnist *It = NfNN_DataLoader_Mnist_NextBatch(TrainLoader);
-             It != 0 && IterationCount < Config.NumberOfUpdates;
-             It = NfNN_DataLoader_Mnist_NextBatch(TrainLoader))
+             It != 0 && IterationCount < Config.NumberOfUpdates; It = NfNN_DataLoader_Mnist_NextBatch(TrainLoader))
         {
             NfNN_MemoryArena_TempInit(&Mem_T);
 
@@ -334,18 +333,18 @@ int main(int ArgumentCount, char **Arguments)
     Config.NumberOfUpdates = 5000;
     Config.Port = 21756;
     NFNN_STRCPY(Config.IpAddress, "localhost");
-    #if defined(_WIN32)
+#if defined(_WIN32)
     NFNN_STRCPY(Config.TrainingImagesFilePath, "..\\examples\\mnist\\dataset\\MNIST\\raw\\train-images-idx3-ubyte");
     NFNN_STRCPY(Config.TrainLabelsFilePath, "..\\examples\\mnist\\dataset\\MNIST\\raw\\train-labels-idx1-ubyte");
-    #else
+#else
     NFNN_STRCPY(Config.TrainingImagesFilePath, "../examples/mnist/dataset/MNIST/raw/train-images-idx3-ubyte");
     NFNN_STRCPY(Config.TrainLabelsFilePath, "../examples/mnist/dataset/MNIST/raw/train-labels-idx1-ubyte");
-    #endif
+#endif
     Config.TrainingSplit = 0.8; // [0, 1] Proportion to be used between training and validation
     Config.ValidationBatchSize = 128;
     Config.TrainBatchSize = 32;
 
-    for(u32 I = 1; I < ArgumentCount;)
+    for (u32 I = 1; I < ArgumentCount;)
     {
         if (NFNN_STREQUAL(Arguments[I], "--server") || NFNN_STREQUAL(Arguments[I], "-s"))
         {

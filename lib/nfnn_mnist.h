@@ -28,8 +28,7 @@ struct nfnn_dataloader_mnist
     nfnn_random_state *Random;
 };
 
-static bool
-ReadIDX1(char *Filename, u8 *Labels, u32 ExpectedNumberOfLabels)
+static bool ReadIDX1(char *Filename, u8 *Labels, u32 ExpectedNumberOfLabels)
 {
     FILE *File = fopen(Filename, "rb");
     if (File)
@@ -85,8 +84,7 @@ ReadIDX1(char *Filename, u8 *Labels, u32 ExpectedNumberOfLabels)
     }
 }
 
-static bool
-ReadIDX3(char *Filename, u8 *Images, u32 ExpectedNumberOfImages, u32 ExpectedHeight, u32 ExpectedWidth)
+static bool ReadIDX3(char *Filename, u8 *Images, u32 ExpectedNumberOfImages, u32 ExpectedHeight, u32 ExpectedWidth)
 {
     FILE *File = fopen(Filename, "rb");
     if (File)
@@ -126,8 +124,8 @@ ReadIDX3(char *Filename, u8 *Images, u32 ExpectedNumberOfImages, u32 ExpectedHei
             }
             ImagesWidth = NfNN_Math_BigEndianToLittleEndian_u32(ImagesWidth);
 
-            if (NumberOfImages == ExpectedNumberOfImages &&
-                ImagesHeight == ExpectedHeight && ImagesWidth && ExpectedWidth)
+            if (NumberOfImages == ExpectedNumberOfImages && ImagesHeight == ExpectedHeight && ImagesWidth &&
+                ExpectedWidth)
             {
                 if (!fread(Images, 1, NumberOfImages * ImagesWidth * ImagesHeight, File))
                 {
@@ -159,8 +157,8 @@ ReadIDX3(char *Filename, u8 *Images, u32 ExpectedNumberOfImages, u32 ExpectedHei
     }
 }
 
-static nfnn_datasets_mnist *
-NfNN_Datasets_MNIST_Load(nfnn_memory_arena *Mem, char *ImagePath, char *LabelPath, u32 NumberOfImages)
+static nfnn_datasets_mnist *NfNN_Datasets_MNIST_Load(nfnn_memory_arena *Mem, char *ImagePath, char *LabelPath,
+                                                     u32 NumberOfImages)
 {
     nfnn_datasets_mnist *Result = NfNN_PushStruct(Mem, nfnn_datasets_mnist);
     Result->Images = NfNN_PushArray(Mem, u8, NumberOfImages * 28 * 28);
@@ -173,8 +171,8 @@ NfNN_Datasets_MNIST_Load(nfnn_memory_arena *Mem, char *ImagePath, char *LabelPat
     return Result;
 }
 
-static nfnn_datasets_mnist *
-NfNN_Datasets_Mnist_Split(nfnn_memory_arena *Mem, nfnn_datasets_mnist *Dataset, u32 Start, u32 Length)
+static nfnn_datasets_mnist *NfNN_Datasets_Mnist_Split(nfnn_memory_arena *Mem, nfnn_datasets_mnist *Dataset, u32 Start,
+                                                      u32 Length)
 {
     // TODO(luatil): This does copying. This might not be the best idea.
     nfnn_datasets_mnist *Result = NfNN_PushStruct(Mem, nfnn_datasets_mnist);
@@ -191,8 +189,8 @@ NfNN_Datasets_Mnist_Split(nfnn_memory_arena *Mem, nfnn_datasets_mnist *Dataset, 
     return Result;
 }
 
-static nfnn_dataloader_mnist *
-NfNN_Dataloader_Mnist_Create(nfnn_memory_arena *Mem, nfnn_datasets_mnist *Dataset, u32 BatchSize, nfnn_random_state *Random)
+static nfnn_dataloader_mnist *NfNN_Dataloader_Mnist_Create(nfnn_memory_arena *Mem, nfnn_datasets_mnist *Dataset,
+                                                           u32 BatchSize, nfnn_random_state *Random)
 {
     nfnn_dataloader_mnist *Result = NfNN_PushStruct(Mem, nfnn_dataloader_mnist);
     Result->BatchSize = BatchSize;
@@ -208,8 +206,7 @@ NfNN_Dataloader_Mnist_Create(nfnn_memory_arena *Mem, nfnn_datasets_mnist *Datase
     return Result;
 }
 
-static nfnn_dataloader_batch_mnist *
-NfNN_DataLoader_Mnist_NextBatch(nfnn_dataloader_mnist *Loader)
+static nfnn_dataloader_batch_mnist *NfNN_DataLoader_Mnist_NextBatch(nfnn_dataloader_mnist *Loader)
 {
     // Inplace iterator
     nfnn_dataloader_batch_mnist *Result = 0;
@@ -261,15 +258,13 @@ NfNN_DataLoader_Mnist_NextBatch(nfnn_dataloader_mnist *Loader)
     return Result;
 }
 
-static u32
-NfNN_DataLoader_Mnist_NumberOfBatches(nfnn_dataloader_mnist *Loader)
+static u32 NfNN_DataLoader_Mnist_NumberOfBatches(nfnn_dataloader_mnist *Loader)
 {
     u32 Result = Loader->Dataset->NumberOfImages / Loader->BatchSize;
     return Result;
 }
 
-static void
-NfNN_Datasets_Mnist_PrintImage(nfnn_tensor *T, nfnn_tensor *Labels, u32 BatchSize)
+static void NfNN_Datasets_Mnist_PrintImage(nfnn_tensor *T, nfnn_tensor *Labels, u32 BatchSize)
 {
     static char *Chars = " .:-=+*#%@";
     u32 CharsLength = strlen(Chars);

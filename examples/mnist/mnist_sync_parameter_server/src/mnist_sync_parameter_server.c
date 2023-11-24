@@ -34,8 +34,7 @@ struct accuracy_and_loss
     f32 Loss;
 };
 
-static void
-PrintConfiguration(configuration Config)
+static void PrintConfiguration(configuration Config)
 {
     printf("Configuration:\n");
     printf("  Seed: %u\n", Config.Seed);
@@ -52,8 +51,7 @@ PrintConfiguration(configuration Config)
     printf("  Training Batch Size: %u\n", Config.TrainBatchSize);
 }
 
-static void
-PrintHelp(char *Exe)
+static void PrintHelp(char *Exe)
 {
     printf("Usage: %s <options>\n", Exe);
     printf("\nOptions:\n");
@@ -113,13 +111,13 @@ static nfnn_tensor *Forward(nfnn_memory_arena *Mem, model Model, nfnn_tensor *In
     return Result;
 }
 
-static accuracy_and_loss CalculateAccuracyAndLoss(nfnn_memory_arena *Mem, model Model, nfnn_dataloader_mnist *DataLoader)
+static accuracy_and_loss CalculateAccuracyAndLoss(nfnn_memory_arena *Mem, model Model,
+                                                  nfnn_dataloader_mnist *DataLoader)
 {
     u32 Correct = 0;
     u32 Total = 0;
     f32 AverageLoss = 0.0f;
-    for (nfnn_dataloader_batch_mnist *It = NfNN_DataLoader_Mnist_NextBatch(DataLoader);
-         It != 0;
+    for (nfnn_dataloader_batch_mnist *It = NfNN_DataLoader_Mnist_NextBatch(DataLoader); It != 0;
          It = NfNN_DataLoader_Mnist_NextBatch(DataLoader))
     {
         NfNN_MemoryArena_TempInit(Mem);
@@ -145,8 +143,7 @@ static accuracy_and_loss CalculateAccuracyAndLoss(nfnn_memory_arena *Mem, model 
     return Result;
 }
 
-static void
-RunAsServer(configuration Config)
+static void RunAsServer(configuration Config)
 
 {
     /**
@@ -185,13 +182,16 @@ RunAsServer(configuration Config)
 
     nfnn_optimizer *Optimizer = CreateOptimizer(&Mem_P, Model, Config.LearningRate, Config.NumberOfWorkers);
 
-    nfnn_datasets_mnist *FullTrainDataset = NfNN_Datasets_MNIST_Load(&Mem_P, Config.TrainingImagesFilePath, Config.TrainLabelsFilePath, 60000);
+    nfnn_datasets_mnist *FullTrainDataset =
+        NfNN_Datasets_MNIST_Load(&Mem_P, Config.TrainingImagesFilePath, Config.TrainLabelsFilePath, 60000);
 
     u32 TrainingNumber = (u32)(60000 * Config.TrainingSplit);
     u32 ValidationNumber = 60000 - TrainingNumber;
 
-    nfnn_datasets_mnist *ValidationDataset = NfNN_Datasets_Mnist_Split(&Mem_P, FullTrainDataset, TrainingNumber, ValidationNumber);
-    nfnn_dataloader_mnist *ValidationLoader = NfNN_Dataloader_Mnist_Create(&Mem_P, ValidationDataset, Config.ValidationBatchSize, 0);
+    nfnn_datasets_mnist *ValidationDataset =
+        NfNN_Datasets_Mnist_Split(&Mem_P, FullTrainDataset, TrainingNumber, ValidationNumber);
+    nfnn_dataloader_mnist *ValidationLoader =
+        NfNN_Dataloader_Mnist_Create(&Mem_P, ValidationDataset, Config.ValidationBatchSize, 0);
 
     nfnn_parameter_server *Server = NfNN_ParameterServer_Create(&Mem_P, Config.IpAddress, Config.Port);
 
@@ -246,8 +246,7 @@ RunAsServer(configuration Config)
     NfNN_Network_DestroyInterface(Interface);
 }
 
-static void
-RunAsWorker(configuration Config)
+static void RunAsWorker(configuration Config)
 {
     /**
      * Program for the ith worker:
@@ -276,7 +275,8 @@ RunAsWorker(configuration Config)
 
     nfnn_socket *Socket = NfNN_Network_TCPConnect(&Mem_P, Config.IpAddress, Config.Port);
 
-    nfnn_datasets_mnist *FullTrainDataset = NfNN_Datasets_MNIST_Load(&Mem_P, Config.TrainingImagesFilePath, Config.TrainLabelsFilePath, 60000);
+    nfnn_datasets_mnist *FullTrainDataset =
+        NfNN_Datasets_MNIST_Load(&Mem_P, Config.TrainingImagesFilePath, Config.TrainLabelsFilePath, 60000);
 
     u32 TrainingNumber = (u32)(60000 * Config.TrainingSplit);
     nfnn_datasets_mnist *TrainDataset = NfNN_Datasets_Mnist_Split(&Mem_P, FullTrainDataset, 0, TrainingNumber);
@@ -285,8 +285,7 @@ RunAsWorker(configuration Config)
     for (u32 IterationCount = 0; IterationCount < Config.NumberOfUpdates;)
     {
         for (nfnn_dataloader_batch_mnist *It = NfNN_DataLoader_Mnist_NextBatch(TrainLoader);
-             It != 0 && IterationCount < Config.NumberOfUpdates;
-             It = NfNN_DataLoader_Mnist_NextBatch(TrainLoader))
+             It != 0 && IterationCount < Config.NumberOfUpdates; It = NfNN_DataLoader_Mnist_NextBatch(TrainLoader))
         {
 
             NfNN_MemoryArena_TempInit(&Mem_T);

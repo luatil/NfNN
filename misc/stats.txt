@@ -1,60 +1,60 @@
 All files
 Counting lines for ..
 Total files: 24
-Total lines: 5278
+Total lines: 5121
 
-******************** |  733 | tests.c
-*****************    |  650 | nfnn_math.h
-*************        |  467 | mnist_sync_parameter_server.c
-************         |  461 | mnist_async_parameter_server.c
-***********          |  403 | nfnn_network.h
-**********           |  372 | nfnn_ops.h
-********             |  294 | nfnn_mnist.h
-*******              |  258 | nfnn_tensor.h
-*******              |  241 | nfnn_optimizer.h
-*******              |  239 | nfnn_autograd.h
-******               |  224 | count_lines.c
-****                 |  149 | mnist_single_device.c
-***                  |  102 | nfnn_macro.h
-***                  |  101 | xor.c
-***                  |   98 | nfnn_random.h
-***                  |   82 | nfnn_memory_arena.h
-***                  |   82 | nfnn_time.h
-**                   |   76 | pytorch_mnist.py
-**                   |   73 | nfnn_platform.h
+******************** |  682 | tests.c
+*****************    |  603 | nfnn_math.h
+*************        |  466 | mnist_sync_parameter_server.c
+*************        |  460 | mnist_async_parameter_server.c
+***********          |  381 | nfnn_network.h
+***********          |  377 | nfnn_ops.h
+*********            |  289 | nfnn_mnist.h
+********             |  265 | nfnn_tensor.h
+*******              |  241 | nfnn_autograd.h
+*******              |  236 | nfnn_optimizer.h
+*******              |  224 | count_lines.c
+*****                |  149 | mnist_single_device.c
+***                  |   91 | xor.c
+***                  |   91 | nfnn_macro.h
+***                  |   90 | nfnn_random.h
+***                  |   79 | nfnn_memory_arena.h
+***                  |   79 | nfnn_time.h
+***                  |   76 | pytorch_mnist.py
+**                   |   71 | nfnn_platform.h
 **                   |   59 | mnist_test_dataloader.c
 **                   |   40 | pytorch_xor_adam.py
-*                    |   36 | pytorch_xor.py
-*                    |   24 | nfnn_types.h
-*                    |   14 | nfnn.h
+**                   |   36 | pytorch_xor.py
+*                    |   23 | nfnn_types.h
+*                    |   13 | nfnn.h
 Main lib
 Counting lines for ../lib
 Total files: 14
-Total lines: 2932
+Total lines: 2838
 
-******************** |  650 | nfnn_math.h
-************         |  403 | nfnn_network.h
-***********          |  372 | nfnn_ops.h
-*********            |  294 | nfnn_mnist.h
-********             |  258 | nfnn_tensor.h
-********             |  241 | nfnn_optimizer.h
-*******              |  239 | nfnn_autograd.h
-***                  |  102 | nfnn_macro.h
-***                  |   98 | nfnn_random.h
-***                  |   82 | nfnn_memory_arena.h
-***                  |   82 | nfnn_time.h
-***                  |   73 | nfnn_platform.h
-*                    |   24 | nfnn_types.h
-*                    |   14 | nfnn.h
+******************** |  603 | nfnn_math.h
+*************        |  381 | nfnn_network.h
+************         |  377 | nfnn_ops.h
+**********           |  289 | nfnn_mnist.h
+*********            |  265 | nfnn_tensor.h
+********             |  241 | nfnn_autograd.h
+********             |  236 | nfnn_optimizer.h
+***                  |   91 | nfnn_macro.h
+***                  |   90 | nfnn_random.h
+***                  |   79 | nfnn_memory_arena.h
+***                  |   79 | nfnn_time.h
+***                  |   71 | nfnn_platform.h
+*                    |   23 | nfnn_types.h
+*                    |   13 | nfnn.h
 Examples
 Counting lines for ../examples
 Total files: 8
-Total lines: 1389
+Total lines: 1377
 
-******************** |  467 | mnist_sync_parameter_server.c
-*******************  |  461 | mnist_async_parameter_server.c
+******************** |  466 | mnist_sync_parameter_server.c
+*******************  |  460 | mnist_async_parameter_server.c
 *******              |  149 | mnist_single_device.c
-*****                |  101 | xor.c
+****                 |   91 | xor.c
 ****                 |   76 | pytorch_mnist.py
 ***                  |   59 | mnist_test_dataloader.c
 **                   |   40 | pytorch_xor_adam.py

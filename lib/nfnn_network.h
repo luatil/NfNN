@@ -1,11 +1,11 @@
 #ifndef NFNN_NETWORK_H
 #define NFNN_NETWORK_H
 
-#include "nfnn_types.h"
-#include "nfnn_memory_arena.h"
 #include "nfnn_macro.h"
-#include "nfnn_tensor.h"
+#include "nfnn_memory_arena.h"
 #include "nfnn_platform.h"
+#include "nfnn_tensor.h"
+#include "nfnn_types.h"
 
 static u64 GlobalRead = 0;
 static u64 GlobalWrite = 0;
@@ -30,13 +30,12 @@ struct nfnn_parameter_server
 typedef struct nfnn_network_interface nfnn_network_interface;
 struct nfnn_network_interface
 {
-    #if defined(_WIN32)
+#if defined(_WIN32)
     WSADATA WsaData;
-    #endif
+#endif
 };
 
-static nfnn_socket *
-NfNN_Network_TCPConnect(nfnn_memory_arena *Mem, char *Host, u32 Port)
+static nfnn_socket *NfNN_Network_TCPConnect(nfnn_memory_arena *Mem, char *Host, u32 Port)
 {
     nfnn_socket *Result = NfNN_PushStruct(Mem, nfnn_socket);
 
@@ -69,8 +68,7 @@ NfNN_Network_TCPConnect(nfnn_memory_arena *Mem, char *Host, u32 Port)
     return Result;
 }
 
-static nfnn_socket *
-NfNN_Network_TCPListeningSocket(nfnn_memory_arena *Mem, char *Host, u32 Port)
+static nfnn_socket *NfNN_Network_TCPListeningSocket(nfnn_memory_arena *Mem, char *Host, u32 Port)
 {
     nfnn_socket *Result = NfNN_PushStruct(Mem, nfnn_socket);
 
@@ -112,31 +110,28 @@ NfNN_Network_TCPListeningSocket(nfnn_memory_arena *Mem, char *Host, u32 Port)
     return Result;
 }
 
-static nfnn_network_interface *
-NfNN_Network_CreateInterface(nfnn_memory_arena *Mem)
+static nfnn_network_interface *NfNN_Network_CreateInterface(nfnn_memory_arena *Mem)
 {
     nfnn_network_interface *Result = NfNN_PushStruct(Mem, nfnn_network_interface);
 
-    #if defined(_WIN32)
+#if defined(_WIN32)
     int WSAResult = WSAStartup(MAKEWORD(2, 2), &Result->WsaData);
     NFNN_ASSERT(WSAResult == 0, "WSAStartup failed");
-    // TODO(luatil): Do better error handling
-    // printf("WSAStartup failed: %d\n", WSAGetLastError());
-    #endif
+// TODO(luatil): Do better error handling
+// printf("WSAStartup failed: %d\n", WSAGetLastError());
+#endif
 
     return Result;
 }
 
-static void
-NfNN_Network_DestroyInterface(nfnn_network_interface *Interface)
+static void NfNN_Network_DestroyInterface(nfnn_network_interface *Interface)
 {
-    #if defined(_WIN32)
+#if defined(_WIN32)
     WSACleanup();
-    #endif
+#endif
 }
 
-static nfnn_parameter_server *
-NfNN_ParameterServer_Create(nfnn_memory_arena *Mem, char *Host, u32 Port)
+static nfnn_parameter_server *NfNN_ParameterServer_Create(nfnn_memory_arena *Mem, char *Host, u32 Port)
 {
     nfnn_parameter_server *Result = NfNN_PushStruct(Mem, nfnn_parameter_server);
 
@@ -144,7 +139,7 @@ NfNN_ParameterServer_Create(nfnn_memory_arena *Mem, char *Host, u32 Port)
     NfNN_MemoryCopy(Result->Host, Host, HostLength);
 
     Result->Port = Port;
-    Result->Socket = NfNN_Network_TCPListeningSocket(Mem, Host, Port); 
+    Result->Socket = NfNN_Network_TCPListeningSocket(Mem, Host, Port);
 
     Result->Master = NfNN_PushStruct(Mem, nfnn_fd_set);
     Result->Working = NfNN_PushStruct(Mem, nfnn_fd_set);
@@ -157,8 +152,7 @@ NfNN_ParameterServer_Create(nfnn_memory_arena *Mem, char *Host, u32 Port)
     return Result;
 }
 
-static void
-NfNN_ParameterServer_AddWorker(nfnn_memory_arena *Mem, nfnn_parameter_server *Server)
+static void NfNN_ParameterServer_AddWorker(nfnn_memory_arena *Mem, nfnn_parameter_server *Server)
 {
     NfNN_MemoryCopy(Server->Working, Server->Master, sizeof(nfnn_fd_set));
 
@@ -188,13 +182,8 @@ NfNN_ParameterServer_AddWorker(nfnn_memory_arena *Mem, nfnn_parameter_server *Se
                 char NodeBuffer[NI_MAXHOST] = {0};
                 char ServiceBuffer[NI_MAXSERV] = {0};
 
-                getnameinfo(&PeerAddr,
-                            PeerAddrlen,
-                            NodeBuffer,
-                            sizeof(NodeBuffer),
-                            ServiceBuffer,
-                            sizeof(ServiceBuffer),
-                            NI_NUMERICHOST | NI_NUMERICSERV);
+                getnameinfo(&PeerAddr, PeerAddrlen, NodeBuffer, sizeof(NodeBuffer), ServiceBuffer,
+                            sizeof(ServiceBuffer), NI_NUMERICHOST | NI_NUMERICSERV);
 
                 printf("New connection from %s:%s\n", NodeBuffer, ServiceBuffer);
 
@@ -213,13 +202,12 @@ NfNN_ParameterServer_AddWorker(nfnn_memory_arena *Mem, nfnn_parameter_server *Se
     }
 }
 
-static void 
-NfNN_Network_RecvSize(nfnn_platform_socket Sock, u32 SizeInBytes, char *Dst)
+static void NfNN_Network_RecvSize(nfnn_platform_socket Sock, u32 SizeInBytes, char *Dst)
 {
     int BytesReceived = 0;
     int RemainingBytes = SizeInBytes;
 
-    while(RemainingBytes > 0)
+    while (RemainingBytes > 0)
     {
         int Recv = recv(Sock, Dst + BytesReceived, RemainingBytes, 0);
         GlobalRead += Recv;
@@ -239,8 +227,7 @@ NfNN_Network_RecvSize(nfnn_platform_socket Sock, u32 SizeInBytes, char *Dst)
     }
 }
 
-static void
-NfNN_Network_SendAll(nfnn_platform_socket Sock, u32 SizeInBytes, char *Src)
+static void NfNN_Network_SendAll(nfnn_platform_socket Sock, u32 SizeInBytes, char *Src)
 {
     int BytesSent = 0;
     int RemainingBytes = SizeInBytes;
@@ -252,7 +239,7 @@ NfNN_Network_SendAll(nfnn_platform_socket Sock, u32 SizeInBytes, char *Src)
         if (Sent > 0 && Sent <= RemainingBytes)
         {
             BytesSent += Sent;
-            RemainingBytes -= Sent ;
+            RemainingBytes -= Sent;
         }
         else if (Sent == 0)
         {
@@ -265,32 +252,27 @@ NfNN_Network_SendAll(nfnn_platform_socket Sock, u32 SizeInBytes, char *Src)
     }
 }
 
-static void
-NfNN_Network_RecvGradient(nfnn_memory_arena *Mem, nfnn_platform_socket Sock, nfnn_tensor *T)
+static void NfNN_Network_RecvGradient(nfnn_memory_arena *Mem, nfnn_platform_socket Sock, nfnn_tensor *T)
 {
-    NfNN_Network_RecvSize(Sock, NfNN_Size(T), (char*)T->Gradient);
+    NfNN_Network_RecvSize(Sock, NfNN_Size(T), (char *)T->Gradient);
 }
 
-static void
-NfNN_Network_SendGradient(nfnn_memory_arena *Mem, nfnn_platform_socket Sock, nfnn_tensor *T)
+static void NfNN_Network_SendGradient(nfnn_memory_arena *Mem, nfnn_platform_socket Sock, nfnn_tensor *T)
 {
-    NfNN_Network_SendAll(Sock, NfNN_Size(T), (char*)T->Gradient);
+    NfNN_Network_SendAll(Sock, NfNN_Size(T), (char *)T->Gradient);
 }
 
-static void
-NfNN_Network_SendTensor(nfnn_memory_arena *Mem, nfnn_platform_socket Sock, nfnn_tensor *T)
+static void NfNN_Network_SendTensor(nfnn_memory_arena *Mem, nfnn_platform_socket Sock, nfnn_tensor *T)
 {
-    NfNN_Network_SendAll(Sock, NfNN_Size(T), (char*)T->Data);
+    NfNN_Network_SendAll(Sock, NfNN_Size(T), (char *)T->Data);
 }
 
-static void
-NfNN_Network_RecvTensor(nfnn_memory_arena *Mem, nfnn_platform_socket Sock, nfnn_tensor *T)
+static void NfNN_Network_RecvTensor(nfnn_memory_arena *Mem, nfnn_platform_socket Sock, nfnn_tensor *T)
 {
-    NfNN_Network_RecvSize(Sock, NfNN_Size(T), (char*)T->Data);
+    NfNN_Network_RecvSize(Sock, NfNN_Size(T), (char *)T->Data);
 }
 
-static void
-NfNN_ParameterServer_BroadcastWeights(nfnn_memory_arena *Mem, nfnn_parameter_server *Server, nfnn_tensor *T)
+static void NfNN_ParameterServer_BroadcastWeights(nfnn_memory_arena *Mem, nfnn_parameter_server *Server, nfnn_tensor *T)
 {
     for (nfnn_platform_socket Sock = 1; Sock <= Server->MaxSocket; Sock++)
     {
@@ -312,16 +294,14 @@ NfNN_ParameterServer_BroadcastWeights(nfnn_memory_arena *Mem, nfnn_parameter_ser
     }
 }
 
-static void
-NfNN_Network_RecvAddGradient(nfnn_memory_arena *Mem, nfnn_platform_socket Sock, nfnn_tensor *T)
+static void NfNN_Network_RecvAddGradient(nfnn_memory_arena *Mem, nfnn_platform_socket Sock, nfnn_tensor *T)
 {
     nfnn_tensor *Temp = NfNN_TensorLike(Mem, T);
     NfNN_Network_RecvGradient(Mem, Sock, Temp);
     NfNN_Math_Add_f32(Temp->Gradient, T->Gradient, NfNN_Length(T), T->Gradient);
 }
 
-static void
-NfNN_ParameterServer_AwaitGradient(nfnn_memory_arena *Mem, nfnn_parameter_server *Server, nfnn_tensor *T)
+static void NfNN_ParameterServer_AwaitGradient(nfnn_memory_arena *Mem, nfnn_parameter_server *Server, nfnn_tensor *T)
 {
     for (nfnn_platform_socket Sock = 1; Sock <= Server->MaxSocket; Sock++)
     {
@@ -345,8 +325,7 @@ NfNN_ParameterServer_AwaitGradient(nfnn_memory_arena *Mem, nfnn_parameter_server
     }
 }
 
-static nfnn_platform_socket 
-NfNN_ParameterServer_AwaitForWorker(nfnn_memory_arena *Mem, nfnn_parameter_server *Server)
+static nfnn_platform_socket NfNN_ParameterServer_AwaitForWorker(nfnn_memory_arena *Mem, nfnn_parameter_server *Server)
 {
     NfNN_MemoryCopy(Server->Working, Server->Master, sizeof(nfnn_fd_set));
 
@@ -375,11 +354,10 @@ NfNN_ParameterServer_AwaitForWorker(nfnn_memory_arena *Mem, nfnn_parameter_serve
     return -1;
 }
 
-static void
-NfNN_ParameterServer_WaitWorkers(nfnn_memory_arena *Mem, nfnn_parameter_server *Server, u32 NumberOfWorkers)
+static void NfNN_ParameterServer_WaitWorkers(nfnn_memory_arena *Mem, nfnn_parameter_server *Server, u32 NumberOfWorkers)
 {
     u32 ReadyToRead = 0;
-    for(;;)
+    for (;;)
     {
         for (nfnn_platform_socket Sock = 1; Sock <= Server->MaxSocket; Sock++)
         {

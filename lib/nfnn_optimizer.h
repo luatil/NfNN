@@ -17,7 +17,6 @@ struct nfnn_optimizer_sgd_param
     nfnn_tensor *B;
 };
 
-
 typedef struct nfnn_optimizer_adam_param nfnn_optimizer_adam_param;
 struct nfnn_optimizer_adam_param
 {
@@ -28,8 +27,8 @@ struct nfnn_optimizer_adam_param
 typedef struct nfnn_optimizer_sgd nfnn_optimizer_sgd;
 struct nfnn_optimizer_sgd
 {
-    f32 WeightDecay; 
-    f32 Momentum; 
+    f32 WeightDecay;
+    f32 Momentum;
     f32 Dampening;
     bool Nesterov;
 };
@@ -45,8 +44,7 @@ struct nfnn_optimizer_param
 {
     nfnn_tensor *Tensor;
     nfnn_optimizer_param *Next;
-    union
-    {
+    union {
         nfnn_optimizer_sgd_param SGD;
         nfnn_optimizer_adam_param Adam;
     };
@@ -59,8 +57,7 @@ struct nfnn_optimizer
     u32 Iteration;
     f32 LearningRate;
     u32 NumberOfWorkers;
-    union 
-    {
+    union {
         nfnn_optimizer_sgd SGD;
         nfnn_optimizer_adam Adam;
     };
@@ -68,8 +65,8 @@ struct nfnn_optimizer
     nfnn_optimizer_param *Last;
 };
 
-
-static nfnn_optimizer *NfNN_Optimizer_SGD(nfnn_memory_arena *Mem, f32 LearningRate, u32 NumberOfWorkers, f32 Momentum, f32 Dampening, f32 WeightDecay, bool Nesterov)
+static nfnn_optimizer *NfNN_Optimizer_SGD(nfnn_memory_arena *Mem, f32 LearningRate, u32 NumberOfWorkers, f32 Momentum,
+                                          f32 Dampening, f32 WeightDecay, bool Nesterov)
 {
     nfnn_optimizer *Result = NfNN_PushStruct(Mem, nfnn_optimizer);
     Result->Type = NFNN_OPTIMIZER_SGD;
@@ -87,7 +84,8 @@ static nfnn_optimizer *NfNN_Optimizer_SGD(nfnn_memory_arena *Mem, f32 LearningRa
     return Result;
 }
 
-static nfnn_optimizer *NfNN_Optimizer_Adam(nfnn_memory_arena *Mem, f32 LearningRate, u32 NumberOfWorkers, f32 Beta1, f32 Beta2)
+static nfnn_optimizer *NfNN_Optimizer_Adam(nfnn_memory_arena *Mem, f32 LearningRate, u32 NumberOfWorkers, f32 Beta1,
+                                           f32 Beta2)
 {
     nfnn_optimizer *Result = NfNN_PushStruct(Mem, nfnn_optimizer);
     Result->Type = NFNN_OPTIMIZER_ADAM;
@@ -126,33 +124,34 @@ static nfnn_optimizer *NfNN_Optimizer_Adam(nfnn_memory_arena *Mem, f32 LearningR
 
 static void NfNN_Optimizer_AddParam(nfnn_memory_arena *Mem, nfnn_optimizer *Optimizer, nfnn_tensor *T)
 {
-    switch(Optimizer->Type)
+    switch (Optimizer->Type)
     {
-        case NFNN_OPTIMIZER_SGD:
-        {
-            nfnn_optimizer_param *Param = NfNN_PushStruct(Mem, nfnn_optimizer_param);
-            Param->Tensor = T;
-            Param->Next = 0;
+    case NFNN_OPTIMIZER_SGD: {
+        nfnn_optimizer_param *Param = NfNN_PushStruct(Mem, nfnn_optimizer_param);
+        Param->Tensor = T;
+        Param->Next = 0;
 
-            Param->SGD.B = NfNN_ZeroesLike(Mem, T);
+        Param->SGD.B = NfNN_ZeroesLike(Mem, T);
 
-            NFNN_SLL_PushBack(Optimizer->First, Optimizer->Last, Param);
-        } break;
-        case NFNN_OPTIMIZER_ADAM:
-        {
-            nfnn_optimizer_param *Param = NfNN_PushStruct(Mem, nfnn_optimizer_param);
-            Param->Tensor = T;
-            Param->Next = 0;
+        NFNN_SLL_PushBack(Optimizer->First, Optimizer->Last, Param);
+    }
+    break;
+    case NFNN_OPTIMIZER_ADAM: {
+        nfnn_optimizer_param *Param = NfNN_PushStruct(Mem, nfnn_optimizer_param);
+        Param->Tensor = T;
+        Param->Next = 0;
 
-            Param->Adam.M = NfNN_ZeroesLike(Mem, T);
-            Param->Adam.V = NfNN_ZeroesLike(Mem, T);
+        Param->Adam.M = NfNN_ZeroesLike(Mem, T);
+        Param->Adam.V = NfNN_ZeroesLike(Mem, T);
 
-            NFNN_SLL_PushBack(Optimizer->First, Optimizer->Last, Param);
-        } break;
+        NFNN_SLL_PushBack(Optimizer->First, Optimizer->Last, Param);
+    }
+    break;
     }
 }
 
-static void NfNN_Optimizer_SGDUpdate(nfnn_tensor *T, nfnn_optimizer_sgd_param Param, f32 Lr, f32 WeightDecay,  f32 Momentum, f32 Dampening, bool Nesterov, u32 Timestamp)
+static void NfNN_Optimizer_SGDUpdate(nfnn_tensor *T, nfnn_optimizer_sgd_param Param, f32 Lr, f32 WeightDecay,
+                                     f32 Momentum, f32 Dampening, bool Nesterov, u32 Timestamp)
 {
     for (u32 I = 0; I < NfNN_Length(T); I++)
     {
@@ -179,7 +178,6 @@ static void NfNN_Optimizer_SGDUpdate(nfnn_tensor *T, nfnn_optimizer_sgd_param Pa
             {
                 T->Gradient[I] = Param.B->Data[I];
             }
-
         }
 
         T->Data[I] -= Lr * T->Gradient[I];
@@ -202,26 +200,25 @@ static void NfNN_Optimizer_AdamUpdate(nfnn_tensor *T, nfnn_optimizer_adam_param 
 
 static void NfNN_Optimizer_Update(nfnn_optimizer *Optimizer, nfnn_optimizer_param *Param)
 {
-    switch(Optimizer->Type)
+    switch (Optimizer->Type)
     {
-        case NFNN_OPTIMIZER_SGD:
-        {
-            NfNN_Optimizer_SGDUpdate(Param->Tensor, Param->SGD, Optimizer->LearningRate, Optimizer->SGD.WeightDecay, 
-                                     Optimizer->SGD.Momentum, Optimizer->SGD.Dampening, Optimizer->SGD.Nesterov, 
-                                     Optimizer->Iteration);
-        } break;
-        case NFNN_OPTIMIZER_ADAM:
-        {
-            NfNN_Optimizer_AdamUpdate(Param->Tensor, Param->Adam, Optimizer->LearningRate, Optimizer->Adam.Beta1, Optimizer->Adam.Beta2);
-        } break;
+    case NFNN_OPTIMIZER_SGD: {
+        NfNN_Optimizer_SGDUpdate(Param->Tensor, Param->SGD, Optimizer->LearningRate, Optimizer->SGD.WeightDecay,
+                                 Optimizer->SGD.Momentum, Optimizer->SGD.Dampening, Optimizer->SGD.Nesterov,
+                                 Optimizer->Iteration);
+    }
+    break;
+    case NFNN_OPTIMIZER_ADAM: {
+        NfNN_Optimizer_AdamUpdate(Param->Tensor, Param->Adam, Optimizer->LearningRate, Optimizer->Adam.Beta1,
+                                  Optimizer->Adam.Beta2);
+    }
+    break;
     }
 }
 
 static void NfNN_Optimizer_Step(nfnn_optimizer *Optimizer)
 {
-    for (nfnn_optimizer_param *Param = Optimizer->First;
-         Param != 0;
-         Param = Param->Next)
+    for (nfnn_optimizer_param *Param = Optimizer->First; Param != 0; Param = Param->Next)
     {
         NfNN_Optimizer_Update(Optimizer, Param);
     }
@@ -230,9 +227,7 @@ static void NfNN_Optimizer_Step(nfnn_optimizer *Optimizer)
 
 static void NfNN_Optimizer_ZeroGrad(nfnn_optimizer *Optimizer)
 {
-    for (nfnn_optimizer_param *Param = Optimizer->First;
-         Param != 0;
-         Param = Param->Next)
+    for (nfnn_optimizer_param *Param = Optimizer->First; Param != 0; Param = Param->Next)
     {
         NfNN_Math_Zero_f32(Param->Tensor->Gradient, NfNN_Length(Param->Tensor));
     }

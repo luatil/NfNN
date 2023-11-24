@@ -1,8 +1,8 @@
-#ifndef NFNN_TYPES_H 
-#define NFNN_TYPES_H 
+#ifndef NFNN_TYPES_H
+#define NFNN_TYPES_H
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 typedef uint8_t u8;
 typedef uint16_t u16;
@@ -21,5 +21,4 @@ typedef double f64;
 #define MB(_X) (KB(_X) * 1024)
 #define GB(_X) (MB(_X) * 1024)
 
-
-#endif // NFNN_TYPES_H 
+#endif // NFNN_TYPES_H

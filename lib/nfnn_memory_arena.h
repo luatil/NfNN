@@ -1,11 +1,11 @@
-#ifndef NFNN_MEMORY_ARENA_H 
-#define NFNN_MEMORY_ARENA_H 
+#ifndef NFNN_MEMORY_ARENA_H
+#define NFNN_MEMORY_ARENA_H
 
-#include <stdlib.h>
 #include <memory.h>
+#include <stdlib.h>
 
-#include "nfnn_types.h"
 #include "nfnn_macro.h"
+#include "nfnn_types.h"
 
 typedef struct nfnn_memory_arena nfnn_memory_arena;
 struct nfnn_memory_arena
@@ -68,15 +68,12 @@ static void NfNN__MemoryCopy(void *Dest, void *Source, u64 Size)
     memcpy(Dest, Source, Size);
 }
 
-#define NfNN_MemoryCopy(_Dest, _Source, _Size)                                      \
-    NfNN__MemoryCopy((void *)(_Dest), (void *)(_Source), (_Size))
+#define NfNN_MemoryCopy(_Dest, _Source, _Size) NfNN__MemoryCopy((void *)(_Dest), (void *)(_Source), (_Size))
 
-#define NfNN_PushArray(_Arena, _Type, _Count)                                       \
-    (_Type *)NfNN__PushSize(_Arena, sizeof(_Type) * (_Count))
+#define NfNN_PushArray(_Arena, _Type, _Count) (_Type *)NfNN__PushSize(_Arena, sizeof(_Type) * (_Count))
 
 #define NfNN_PushStruct(_Arena, _Type) (_Type *)NfNN__PushSize(_Arena, sizeof(_Type))
 
 #define NfNN_PushTensor(_Arena, _Dim) NfNN_PushArray(_Arena, f32, NfNN_DimSize(_Dim))
 
-
-#endif // NFNN_MEMORY_ARENA_H 
+#endif // NFNN_MEMORY_ARENA_H

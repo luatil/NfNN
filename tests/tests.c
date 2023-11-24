@@ -1,7 +1,6 @@
 #include "../lib/nfnn.h"
 
-static void
-NfNN_Test_Addition(nfnn_memory_arena *Mem)
+static void NfNN_Test_Addition(nfnn_memory_arena *Mem)
 {
     NfNN_MemoryArena_TempInit(Mem);
 
@@ -20,8 +19,7 @@ NfNN_Test_Addition(nfnn_memory_arena *Mem)
     NfNN_MemoryArena_TempClear(Mem);
 }
 
-static void
-NfNN_Test_BroadcastBackward(nfnn_memory_arena *Mem)
+static void NfNN_Test_BroadcastBackward(nfnn_memory_arena *Mem)
 {
     NfNN_MemoryArena_TempInit(Mem);
 
@@ -84,7 +82,6 @@ NfNN_Test_BroadcastBackward(nfnn_memory_arena *Mem)
 
         NFNN_TEST(NfNN_Math_CompareMemory_f32(A->Gradient, ExpectedA, NfNN_Length(A), 0.0001f), "BroadcastBackward");
         NFNN_TEST(NfNN_Math_CompareMemory_f32(B->Gradient, ExpectedB, NfNN_Length(B), 0.0001f), "BroadcastBackward");
-
     }
 
     {
@@ -141,10 +138,10 @@ NfNN_Test_BroadcastBackward(nfnn_memory_arena *Mem)
         // c = a + b
         // d = c ** 2
         // l = d.sum()
-        // 
+        //
         // c.retain_grad()
         // d.retain_grad()
-        // 
+        //
         // l.backward()
         // print(f"a.grad:{a.grad}")
         // print(f"b.grad:{b.grad}")
@@ -177,14 +174,12 @@ NfNN_Test_BroadcastBackward(nfnn_memory_arena *Mem)
         NFNN_TEST(NfNN_Math_CompareMemory_f32(C->Gradient, ExpectedC, NfNN_Length(C), 0.0001f), "BroadcastBackward: C");
         NFNN_TEST(NfNN_Math_CompareMemory_f32(A->Gradient, ExpectedA, NfNN_Length(A), 0.0001f), "BroadcastBackward: A");
         NFNN_TEST(NfNN_Math_CompareMemory_f32(B->Gradient, ExpectedB, NfNN_Length(B), 0.0001f), "BroadcastBackward: B");
-
     }
 
     NfNN_MemoryArena_TempClear(Mem);
 }
 
-static void
-NfNN_Test_Broadcast(nfnn_memory_arena *Mem)
+static void NfNN_Test_Broadcast(nfnn_memory_arena *Mem)
 {
     NfNN_MemoryArena_TempInit(Mem);
 
@@ -215,8 +210,7 @@ NfNN_Test_Broadcast(nfnn_memory_arena *Mem)
     NfNN_MemoryArena_TempClear(Mem);
 }
 
-static void
-NfNN_Test_Product(nfnn_memory_arena *Mem)
+static void NfNN_Test_Product(nfnn_memory_arena *Mem)
 {
     NfNN_MemoryArena_TempInit(Mem);
 
@@ -229,8 +223,7 @@ NfNN_Test_Product(nfnn_memory_arena *Mem)
     NfNN_MemoryArena_TempClear(Mem);
 }
 
-static void
-NfNN_Test_MatMul(nfnn_memory_arena *Mem)
+static void NfNN_Test_MatMul(nfnn_memory_arena *Mem)
 {
     NfNN_MemoryArena_TempInit(Mem);
 
@@ -261,8 +254,7 @@ NfNN_Test_MatMul(nfnn_memory_arena *Mem)
     NfNN_MemoryArena_TempClear(Mem);
 }
 
-static void
-NfNN_Test_LogSoftMax(nfnn_memory_arena *Mem)
+static void NfNN_Test_LogSoftMax(nfnn_memory_arena *Mem)
 {
     NfNN_MemoryArena_TempInit(Mem);
 
@@ -284,12 +276,10 @@ NfNN_Test_LogSoftMax(nfnn_memory_arena *Mem)
         NFNN_TEST(NfNN_AllClose(S, E, 0.0001f), "LogSoftMax");
     }
 
-
     NfNN_MemoryArena_TempClear(Mem);
 }
 
-static void
-NfNN_Test_Sum(nfnn_memory_arena *Mem)
+static void NfNN_Test_Sum(nfnn_memory_arena *Mem)
 {
     NfNN_MemoryArena_TempInit(Mem);
 
@@ -323,8 +313,7 @@ NfNN_Test_Sum(nfnn_memory_arena *Mem)
     NfNN_MemoryArena_TempClear(Mem);
 }
 
-static void
-NfNN_Test_Backward(nfnn_memory_arena *Mem)
+static void NfNN_Test_Backward(nfnn_memory_arena *Mem)
 {
     NfNN_MemoryArena_TempInit(Mem);
 
@@ -337,7 +326,7 @@ NfNN_Test_Backward(nfnn_memory_arena *Mem)
          * l.backward()
          * tensor([[ 0.4621, -0.4621]])
          * print(f"t.grad:{t.grad}")
-        */
+         */
         f32 RawT[] = {1.0f, 2.0f};
         nfnn_tensor *T = NfNN_From_f32(Mem, RawT, NfNN_Dim2(1, 2));
         nfnn_tensor *S = NfNN_LogSoftmax(Mem, T, 1);
@@ -357,7 +346,7 @@ NfNN_Test_Backward(nfnn_memory_arena *Mem)
          * l.backward()
          * print(f"t.grad:{t.grad}")
          * tensor([[ 0.4621, -0.4621], [0.9051, -0.9051]])
-        */
+         */
         f32 RawT[] = {1.0f, 2.0f, 5.0f, 8.0f};
         nfnn_tensor *T = NfNN_From_f32(Mem, RawT, NfNN_Dim2(2, 2));
         nfnn_tensor *S = NfNN_LogSoftmax(Mem, T, 1);
@@ -401,13 +390,8 @@ NfNN_Test_Backward(nfnn_memory_arena *Mem)
          * L = Sum(C) = 1114.
          */
 
-        f32 RawA[2 * 3] = {
-            1.0f, 2.0f, 3.0f,
-            4.0f, 5.0f, 6.0f};
-        f32 RawB[3 * 4] = {
-            7.0f, 8.0f, 9.0f, 10.0f,
-            11.0f, 12.0f, 13.0f, 14.0f,
-            15.0f, 16.0f, 17.0f, 18.0f};
+        f32 RawA[2 * 3] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f};
+        f32 RawB[3 * 4] = {7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f, 17.0f, 18.0f};
 
         nfnn_tensor *A = NfNN_From_f32(Mem, RawA, NfNN_Dim2(2, 3));
         nfnn_tensor *B = NfNN_From_f32(Mem, RawB, NfNN_Dim2(3, 4));
@@ -417,26 +401,10 @@ NfNN_Test_Backward(nfnn_memory_arena *Mem)
         NfNN_AutoGrad_Backward(Mem, L);
 
         f32 ExpectedA[2 * 3] = {
-            34.0,
-            50.0,
-            66.0,
-            34.0,
-            50.0,
-            66.0,
+            34.0, 50.0, 66.0, 34.0, 50.0, 66.0,
         };
         f32 ExpectedB[3 * 4] = {
-            5.0,
-            5.0,
-            5.0,
-            5.0,
-            7.0,
-            7.0,
-            7.0,
-            7.0,
-            9.0,
-            9.0,
-            9.0,
-            9.0,
+            5.0, 5.0, 5.0, 5.0, 7.0, 7.0, 7.0, 7.0, 9.0, 9.0, 9.0, 9.0,
         };
 
         NFNN_TEST(NfNN_Math_CompareMemory_f32(A->Gradient, ExpectedA, NfNN_Length(A), 0.0001f), "dL/dA");
@@ -519,8 +487,7 @@ NfNN_Test_Backward(nfnn_memory_arena *Mem)
     NfNN_MemoryArena_TempClear(Mem);
 }
 
-static void
-NfNN_Test_Math()
+static void NfNN_Test_Math()
 {
     {
         // [[1, 2]] (1, 2) if (dim = 1)
@@ -543,15 +510,11 @@ NfNN_Test_Math()
     {
         u32 L = 2, M = 3, R = 4;
 
-        f32 A[2 * 3] = {1, 2, 3,
-                        4, 5, 6};
+        f32 A[2 * 3] = {1, 2, 3, 4, 5, 6};
 
-        f32 B[3 * 4] = {7, 8, 9, 10,
-                        11, 12, 13, 14,
-                        15, 16, 17, 18};
+        f32 B[3 * 4] = {7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18};
 
-        f32 E[2 * 4] = {74, 80, 86, 92,
-                        173, 188, 203, 218};
+        f32 E[2 * 4] = {74, 80, 86, 92, 173, 188, 203, 218};
 
         f32 C[2 * 4] = {0};
 
@@ -563,18 +526,14 @@ NfNN_Test_Math()
     {
         u32 L = 2, M = 3, R = 2;
 
-        f32 A[2 * 3] = {1, 2, 3,
-                        4, 5, 6};
+        f32 A[2 * 3] = {1, 2, 3, 4, 5, 6};
 
-        f32 B[2 * 3] = {7, 8, 9,
-                        10, 11, 12};
+        f32 B[2 * 3] = {7, 8, 9, 10, 11, 12};
 
-        f32 C[2 * 2] = {1, 2,
-                        3, 4}; // A 2x2 matrix
+        f32 C[2 * 2] = {1, 2, 3, 4}; // A 2x2 matrix
 
         // Test 1: C += A @ B^T
-        f32 Expected[2 * 2] = {50 + 1, 68 + 2,
-                               122 + 3, 167 + 4};
+        f32 Expected[2 * 2] = {50 + 1, 68 + 2, 122 + 3, 167 + 4};
 
         NfNN_Math_MatmulAddTransposeRight_f32(A, B, L, M, R, C);
         NFNN_TEST(NfNN_Math_CompareMemory_f32(C, Expected, 2 * 2, 0.0001f), "C += A @ B^T");
@@ -584,17 +543,13 @@ NfNN_Test_Math()
     {
         u32 L = 2, M = 2, R = 2;
 
-        f32 A[2 * 2] = {1, 2,
-                        3, 4};
+        f32 A[2 * 2] = {1, 2, 3, 4};
 
-        f32 B[2 * 2] = {5, 6,
-                        7, 8};
+        f32 B[2 * 2] = {5, 6, 7, 8};
 
-        f32 C[2 * 2] = {9, 10,
-                        11, 12};
+        f32 C[2 * 2] = {9, 10, 11, 12};
 
-        f32 Expected[2 * 2] = {26 + 9, 30 + 10,
-                               38 + 11, 44 + 12};
+        f32 Expected[2 * 2] = {26 + 9, 30 + 10, 38 + 11, 44 + 12};
 
         NfNN_Math_MatmulAddTransposeLeft_f32(A, B, L, M, R, C);
         NFNN_TEST(NfNN_Math_CompareMemory_f32(C, Expected, 2 * 2, 0.0001f), "C += A^T @ B");
@@ -604,29 +559,21 @@ NfNN_Test_Math()
     {
         u32 L = 3, M = 4, R = 3;
 
-        f32 A[3 * 4] = {1, 2, 3, 4,
-                        5, 6, 7, 8,
-                        9, 10, 11, 12};
+        f32 A[3 * 4] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
 
-        f32 B[3 * 4] = {13, 14, 15, 16,
-                        17, 18, 19, 20,
-                        21, 22, 23, 24};
+        f32 B[3 * 4] = {13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24};
 
-        f32 C[3 * 3] = {25, 26, 27,
-                        28, 29, 30,
-                        31, 32, 33};
+        f32 C[3 * 3] = {25, 26, 27, 28, 29, 30, 31, 32, 33};
 
-        f32 Expected[3 * 3] = {150 + 25, 190 + 26, 230 + 27,
-                               382 + 28, 486 + 29, 590 + 30,
-                               614 + 31, 782 + 32, 950 + 33};
+        f32 Expected[3 * 3] = {150 + 25, 190 + 26, 230 + 27, 382 + 28, 486 + 29,
+                               590 + 30, 614 + 31, 782 + 32, 950 + 33};
 
         NfNN_Math_MatmulAddTransposeRight_f32(A, B, L, M, R, C);
         NFNN_TEST(NfNN_Math_CompareMemory_f32(C, Expected, 3 * 3, 0.0001f), "C += A @ B^T");
     }
 }
 
-static void
-NfNN_Test_NLLLoss(nfnn_memory_arena *Mem)
+static void NfNN_Test_NLLLoss(nfnn_memory_arena *Mem)
 {
     NfNN_MemoryArena_TempInit(Mem);
 
@@ -663,8 +610,10 @@ NfNN_Test_NLLLoss(nfnn_memory_arena *Mem)
 
         f32 ExpectedTGradient[] = {0.2689, -0.2689};
         f32 ExpectedSGradient[] = {0.0000, -1.0};
-        NFNN_TEST(NfNN_Math_CompareMemory_f32(S->Gradient, ExpectedSGradient, NfNN_Length(S), 0.0001f), "NLLLossBackward: dC/dS");
-        NFNN_TEST(NfNN_Math_CompareMemory_f32(T->Gradient, ExpectedTGradient, NfNN_Length(T), 0.0001f), "NLLLossBackward: dC/dT");
+        NFNN_TEST(NfNN_Math_CompareMemory_f32(S->Gradient, ExpectedSGradient, NfNN_Length(S), 0.0001f),
+                  "NLLLossBackward: dC/dS");
+        NFNN_TEST(NfNN_Math_CompareMemory_f32(T->Gradient, ExpectedTGradient, NfNN_Length(T), 0.0001f),
+                  "NLLLossBackward: dC/dT");
     }
 
     {
@@ -677,35 +626,36 @@ NfNN_Test_NLLLoss(nfnn_memory_arena *Mem)
         NfNN_AutoGrad_Backward(Mem, L);
 
         f32 ExpectedTGradient[] = {0.1345, -0.1345, 0.0237, -0.0237};
-        f32 ExpectedSGradient[] = {0.0000, -0.5000,  0.0000, -0.5000};
-        NFNN_TEST(NfNN_Math_CompareMemory_f32(S->Gradient, ExpectedSGradient, NfNN_Length(S), 0.0001f), "NLLLossBackward - Batched: dC/dS");
-        NFNN_TEST(NfNN_Math_CompareMemory_f32(T->Gradient, ExpectedTGradient, NfNN_Length(T), 0.0001f), "NLLLossBackward - Batched: dC/dT");
+        f32 ExpectedSGradient[] = {0.0000, -0.5000, 0.0000, -0.5000};
+        NFNN_TEST(NfNN_Math_CompareMemory_f32(S->Gradient, ExpectedSGradient, NfNN_Length(S), 0.0001f),
+                  "NLLLossBackward - Batched: dC/dS");
+        NFNN_TEST(NfNN_Math_CompareMemory_f32(T->Gradient, ExpectedTGradient, NfNN_Length(T), 0.0001f),
+                  "NLLLossBackward - Batched: dC/dT");
     }
 
     NfNN_MemoryArena_TempClear(Mem);
 }
 
-static void
-NfNN_Test_Argmax(nfnn_memory_arena *Mem)
+static void NfNN_Test_Argmax(nfnn_memory_arena *Mem)
 {
     NfNN_MemoryArena_TempInit(Mem);
 
     {
-        nfnn_tensor *T = NfNN_From_f32(Mem, (f32[]){1., 2., 300., 100., 9. ,10.}, NfNN_Dim2(3, 2));
+        nfnn_tensor *T = NfNN_From_f32(Mem, (f32[]){1., 2., 300., 100., 9., 10.}, NfNN_Dim2(3, 2));
         nfnn_tensor *M = NfNN_Argmax(Mem, T, 1);
         nfnn_tensor *E = NfNN_From_f32(Mem, (f32[]){1., 0., 1}, NfNN_Dim2(3, 1));
         NFNN_TEST(NfNN_AllClose(M, E, 0.0001f), "Argmax");
     }
 
     {
-        nfnn_tensor *T = NfNN_From_f32(Mem, (f32[]){1., 2., 300., 100., 9. ,10.}, NfNN_Dim2(1, 6));
+        nfnn_tensor *T = NfNN_From_f32(Mem, (f32[]){1., 2., 300., 100., 9., 10.}, NfNN_Dim2(1, 6));
         nfnn_tensor *M = NfNN_Argmax(Mem, T, 1);
         nfnn_tensor *E = NfNN_From_f32(Mem, (f32[]){2.}, NfNN_Dim2(1, 1));
         NFNN_TEST(NfNN_AllClose(M, E, 0.0001f), "Argmax");
     }
 
     {
-        nfnn_tensor *T = NfNN_From_f32(Mem, (f32[]){1., 2., 300., 100., 9. ,10.}, NfNN_Dim2(2, 3));
+        nfnn_tensor *T = NfNN_From_f32(Mem, (f32[]){1., 2., 300., 100., 9., 10.}, NfNN_Dim2(2, 3));
         nfnn_tensor *M = NfNN_Argmax(Mem, T, 1);
         nfnn_tensor *E = NfNN_From_f32(Mem, (f32[]){2., 0.}, NfNN_Dim2(2, 1));
         NFNN_TEST(NfNN_AllClose(M, E, 0.0001f), "Argmax");
@@ -713,7 +663,6 @@ NfNN_Test_Argmax(nfnn_memory_arena *Mem)
 
     NfNN_MemoryArena_TempClear(Mem);
 }
-
 
 int main()
 {

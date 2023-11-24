@@ -1,11 +1,11 @@
 #ifndef NFNN_OPS_H
 #define NFNN_OPS_H
 
-#include "nfnn_types.h"
-#include "nfnn_memory_arena.h"
-#include "nfnn_tensor.h"
-#include "nfnn_random.h"
 #include "nfnn_math.h"
+#include "nfnn_memory_arena.h"
+#include "nfnn_random.h"
+#include "nfnn_tensor.h"
+#include "nfnn_types.h"
 
 static nfnn_op NfNN_Op_Binary(nfnn_op_type Type, nfnn_tensor *Left, nfnn_tensor *Right)
 {
@@ -35,7 +35,8 @@ static nfnn_op NfNN_Op_Unary(nfnn_op_type Type, nfnn_tensor *Input)
 
 static f32 NfNN_Item(nfnn_tensor *T)
 {
-    NFNN_ASSERT(T->Dimensions.Dimensions[0] == 1 && T->Dimensions.Dimensions[1] == 1, "NfNN_Item: Tensor is not a scalar");
+    NFNN_ASSERT(T->Dimensions.Dimensions[0] == 1 && T->Dimensions.Dimensions[1] == 1,
+                "NfNN_Item: Tensor is not a scalar");
     return T->Data[0];
 }
 
@@ -167,7 +168,8 @@ static nfnn_tensor *NfNN_Add(nfnn_memory_arena *Mem, nfnn_tensor *X, nfnn_tensor
     else if (Broadcastable)
     {
         Result->Op = NfNN_Op_Binary(NFNN_OP_TYPE_BROADCAST_ADD, X, Y);
-        NfNN_Math_BroadcastAdd_f32(X->Data, X->Dimensions.Dimensions[0], X->Dimensions.Dimensions[1], Y->Data, Y->Dimensions.Dimensions[0], Y->Dimensions.Dimensions[1], Result->Data);
+        NfNN_Math_BroadcastAdd_f32(X->Data, X->Dimensions.Dimensions[0], X->Dimensions.Dimensions[1], Y->Data,
+                                   Y->Dimensions.Dimensions[0], Y->Dimensions.Dimensions[1], Result->Data);
     }
     else
     {
@@ -220,13 +222,15 @@ static bool NfNN_AllClose(nfnn_tensor *X, nfnn_tensor *Y, f32 Episilon)
 
 static nfnn_tensor *NfNN_MatMul(nfnn_memory_arena *Mem, nfnn_tensor *X, nfnn_tensor *Y)
 {
-    nfnn_tensor *Result = NfNN_CreateTensor(Mem, NfNN_Dim2(X->Dimensions.Dimensions[0], Y->Dimensions.Dimensions[1]), true);
+    nfnn_tensor *Result =
+        NfNN_CreateTensor(Mem, NfNN_Dim2(X->Dimensions.Dimensions[0], Y->Dimensions.Dimensions[1]), true);
 
     Result->Op.Type = NFNN_OP_TYPE_MATMUL;
     Result->Op.Binary.Left = X;
     Result->Op.Binary.Right = Y;
 
-    NfNN_Math_MatMul_f32(X->Data, Y->Data, X->Dimensions.Dimensions[0], X->Dimensions.Dimensions[1], Y->Dimensions.Dimensions[1], Result->Data);
+    NfNN_Math_MatMul_f32(X->Data, Y->Data, X->Dimensions.Dimensions[0], X->Dimensions.Dimensions[1],
+                         Y->Dimensions.Dimensions[1], Result->Data);
 
     return Result;
 }
@@ -319,13 +323,14 @@ static nfnn_tensor *NfNN_NLLLoss(nfnn_memory_arena *Mem, nfnn_tensor *T, nfnn_te
 {
     nfnn_tensor *Result = NfNN_CreateTensor(Mem, NfNN_Dim2(1, 1), true);
     Result->Op = NfNN_Op_Binary(NFNN_OP_TYPE_NLL_LOSS, T, Indexes);
-    NfNN_Math_NLLLoss_Mean_f32(T->Data, Indexes->Data, T->Dimensions.Dimensions[0], T->Dimensions.Dimensions[1], Result->Data);
+    NfNN_Math_NLLLoss_Mean_f32(T->Data, Indexes->Data, T->Dimensions.Dimensions[0], T->Dimensions.Dimensions[1],
+                               Result->Data);
     return Result;
 }
 
 static nfnn_tensor *NfNN_MSELoss(nfnn_memory_arena *Mem, nfnn_tensor *X, nfnn_tensor *Y)
 {
-    nfnn_tensor *Diff = NfNN_Sub(Mem, X, Y); 
+    nfnn_tensor *Diff = NfNN_Sub(Mem, X, Y);
     nfnn_tensor *Square = NfNN_Square(Mem, Diff);
     nfnn_tensor *Loss = NfNN_SumAll(Mem, Square);
 
@@ -344,7 +349,7 @@ static nfnn_tensor *NfNN_Argmax(nfnn_memory_arena *Mem, nfnn_tensor *T, u32 Dim)
         Result = NfNN_CreateTensor(Mem, NfNN_Dim2(T->Dimensions.Dimensions[0], 1), false);
         NfNN_Math_Argmax(T->Data, T->Dimensions.Dimensions[0], T->Dimensions.Dimensions[1], Dim, Result->Data);
     }
-    else if(Dim == 0)
+    else if (Dim == 0)
     {
         NFNN_NOT_IMPLEMENTED();
     }

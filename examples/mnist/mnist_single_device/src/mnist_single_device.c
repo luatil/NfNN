@@ -9,20 +9,22 @@ int main()
     nfnn_random_state Random = {0};
     NfNN_Random_Init(&Random, 234521);
 
-    #if defined(_WIN32)
+#if defined(_WIN32)
     char *TrainImagesFilePath = "..\\examples\\mnist\\dataset\\MNIST\\raw\\train-images-idx3-ubyte";
     char *TrainLabelsFilePath = "..\\examples\\mnist\\dataset\\MNIST\\raw\\train-labels-idx1-ubyte";
-    #else
+#else
     char *TrainImagesFilePath = "../examples/mnist/dataset/MNIST/raw/train-images-idx3-ubyte";
     char *TrainLabelsFilePath = "../examples/mnist/dataset/MNIST/raw/train-labels-idx1-ubyte";
-    #endif
-    nfnn_datasets_mnist *FullTrainDataset = NfNN_Datasets_MNIST_Load(&Mem_P, TrainImagesFilePath, TrainLabelsFilePath, 60000);
+#endif
+    nfnn_datasets_mnist *FullTrainDataset =
+        NfNN_Datasets_MNIST_Load(&Mem_P, TrainImagesFilePath, TrainLabelsFilePath, 60000);
 
     u32 TrainingNumber = (u32)(60000 * 0.8);
     u32 ValidationNumber = 60000 - TrainingNumber;
 
     nfnn_datasets_mnist *TrainDataset = NfNN_Datasets_Mnist_Split(&Mem_P, FullTrainDataset, 0, TrainingNumber);
-    nfnn_datasets_mnist *ValidationDataset = NfNN_Datasets_Mnist_Split(&Mem_P, FullTrainDataset, TrainingNumber, ValidationNumber);
+    nfnn_datasets_mnist *ValidationDataset =
+        NfNN_Datasets_Mnist_Split(&Mem_P, FullTrainDataset, TrainingNumber, ValidationNumber);
 
     nfnn_dataloader_mnist *TrainLoader = NfNN_Dataloader_Mnist_Create(&Mem_P, TrainDataset, 64, &Random);
     nfnn_dataloader_mnist *ValidationLoader = NfNN_Dataloader_Mnist_Create(&Mem_P, ValidationDataset, 128, 0);
@@ -48,8 +50,7 @@ int main()
     {
         u32 Correct = 0;
         u32 Total = 0;
-        for (nfnn_dataloader_batch_mnist *It = NfNN_DataLoader_Mnist_NextBatch(ValidationLoader);
-             It != 0;
+        for (nfnn_dataloader_batch_mnist *It = NfNN_DataLoader_Mnist_NextBatch(ValidationLoader); It != 0;
              It = NfNN_DataLoader_Mnist_NextBatch(ValidationLoader))
         {
             NfNN_MemoryArena_TempInit(&Mem_T);
@@ -73,7 +74,7 @@ int main()
 
         f32 ValidationAccuracy = 100.0 * (f32)Correct / (f32)Total;
         // u32 NumberOfBatches = NfNN_DataLoader_Mnist_NumberOfBatches(TrainLoader);
-        printf("Epoch %d: Validation Accuracy: %f\n", 0,  ValidationAccuracy);
+        printf("Epoch %d: Validation Accuracy: %f\n", 0, ValidationAccuracy);
     }
 
     for (u32 Epoch = 0; Epoch < NumberOfEpochs; Epoch++)
@@ -82,8 +83,7 @@ int main()
 
         u32 IterationCount = 0;
 
-        for (nfnn_dataloader_batch_mnist *It = NfNN_DataLoader_Mnist_NextBatch(TrainLoader);
-             It != 0;
+        for (nfnn_dataloader_batch_mnist *It = NfNN_DataLoader_Mnist_NextBatch(TrainLoader); It != 0;
              It = NfNN_DataLoader_Mnist_NextBatch(TrainLoader))
         {
             NfNN_MemoryArena_TempInit(&Mem_T);
@@ -118,8 +118,7 @@ int main()
 
         u32 Correct = 0;
         u32 Total = 0;
-        for (nfnn_dataloader_batch_mnist *It = NfNN_DataLoader_Mnist_NextBatch(ValidationLoader);
-             It != 0;
+        for (nfnn_dataloader_batch_mnist *It = NfNN_DataLoader_Mnist_NextBatch(ValidationLoader); It != 0;
              It = NfNN_DataLoader_Mnist_NextBatch(ValidationLoader))
         {
             NfNN_MemoryArena_TempInit(&Mem_T);
@@ -143,7 +142,8 @@ int main()
         NfNN_MemoryArena_TempInit(&Mem_T);
         f32 ValidationAccuracy = 100.0 * (f32)Correct / (f32)Total;
         u32 NumberOfBatches = NfNN_DataLoader_Mnist_NumberOfBatches(TrainLoader);
-        printf("Epoch %d: Loss: %f, Validation Accuracy: %f\n", Epoch + 1, RunningLoss / NumberOfBatches, ValidationAccuracy);
+        printf("Epoch %d: Loss: %f, Validation Accuracy: %f\n", Epoch + 1, RunningLoss / NumberOfBatches,
+               ValidationAccuracy);
     }
     printf("Training Complete!\n");
 }

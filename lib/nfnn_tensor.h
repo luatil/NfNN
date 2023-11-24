@@ -1,8 +1,8 @@
 #ifndef NFNN_TENSOR_H
 #define NFNN_TENSOR_H
 
-#include "nfnn_types.h"
 #include "nfnn_memory_arena.h"
+#include "nfnn_types.h"
 
 #define NFNN_MAX_DIMENSIONS 2
 typedef struct nfnn_dim nfnn_dim;
@@ -54,30 +54,30 @@ static bool NfNN_Dim_Broadcastable(nfnn_dim A, nfnn_dim B)
      * General semantics
      * Two tensors are “broadcastable” if the following rules hold:
      *  - Each tensor has at least one dimension.
-     *  - When iterating over the dimension sizes, 
-     *    starting at the trailing dimension, the dimension 
-     *    sizes must either be equal, one of them is 1, or one of 
+     *  - When iterating over the dimension sizes,
+     *    starting at the trailing dimension, the dimension
+     *    sizes must either be equal, one of them is 1, or one of
      *    them does not exist.
-     * 
+     *
      * Examples:
-     * 
+     *
      * (1)
      * A      (2d tensor):  5 x 4
      * B      (2d tensor):  5 x 1
      * A + B is broadcastable
-     * 
+     *
      * (2)
      * A      (2d tensor):  5 x 4
      * B      (2d tensor):  3 x 1
      * A + B is not broadcastable
-     * 
+     *
      * (3)
      * A      (2d tensor):  5 x 4
      * B      (2d tensor):  1 x 4
      * A + B is broadcastable
-     * 
+     *
      **/
-    
+
     bool Result = true;
     // NOTE(luatil): Hardcoded for 2 dimension tensors it for now on 2
     // NOTE(luatil): Only supports broadcasting the B tensor
@@ -95,8 +95,7 @@ static bool NfNN_Dim_Broadcastable(nfnn_dim A, nfnn_dim B)
     {
         for (u32 DimIndex = 0; DimIndex < A.UsedDimensions; DimIndex++)
         {
-            if (A.Dimensions[DimIndex] != B.Dimensions[DimIndex] &&
-                B.Dimensions[DimIndex] != 1)
+            if (A.Dimensions[DimIndex] != B.Dimensions[DimIndex] && B.Dimensions[DimIndex] != 1)
             {
                 Result = false;
                 break;
@@ -138,18 +137,22 @@ struct nfnn_op
     nfnn_op_type Type;
     union {
         nfnn_tensor *Inputs[NFNN_MAX_INPUTS];
-        struct {
+        struct
+        {
             nfnn_tensor *Left;
             nfnn_tensor *Right;
         } Binary;
-        struct {
+        struct
+        {
             nfnn_tensor *Input;
             u32 Dim;
         } Dimensional;
-        struct {
+        struct
+        {
             nfnn_tensor *Input;
         } Unary;
-        struct {
+        struct
+        {
             f32 ConstantInputf32;
         } Constant;
     };
@@ -168,7 +171,7 @@ struct nfnn_tensor
 {
     nfnn_dim Dimensions;
     f32 *Data;
-    f32 *Gradient; 
+    f32 *Gradient;
     bool RequiresGrad;
     bool Visited;
     nfnn_op Op;
@@ -226,7 +229,6 @@ static nfnn_tensor *NfNN_ZeroesLike(nfnn_memory_arena *Mem, nfnn_tensor *X)
     return Result;
 }
 
-
 static void NfNN_Print_(nfnn_tensor *T)
 {
     for (u32 Row = 0; Row < T->Dimensions.Dimensions[0]; Row++)
@@ -251,8 +253,13 @@ static void NfNN_PrintGrad_(nfnn_tensor *T)
     }
 }
 
-#define NfNN_Print(_T) printf("%s:\n", #_T); NfNN_Print_(_T); printf("\n");
-#define NfNN_PrintGrad(_T) printf("d%s:\n", #_T); NfNN_PrintGrad_(_T); printf("\n");
-
+#define NfNN_Print(_T)                                                                                                 \
+    printf("%s:\n", #_T);                                                                                              \
+    NfNN_Print_(_T);                                                                                                   \
+    printf("\n");
+#define NfNN_PrintGrad(_T)                                                                                             \
+    printf("d%s:\n", #_T);                                                                                             \
+    NfNN_PrintGrad_(_T);                                                                                               \
+    printf("\n");
 
 #endif // NFNN_TENSOR_H

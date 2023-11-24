@@ -20,19 +20,18 @@
 
 #endif
 
-
 #if defined(_WIN32)
 #define NFNN_ISVALIDSOCKET(s) ((s) != INVALID_SOCKET)
 #define NFNN_CLOSESOCKET(s) closesocket(s)
 #define NFNN_GETSOCKETERRNO() (WSAGetLastError())
 typedef SOCKET nfnn_platform_socket;
 #define NFNN_PLATFORM_SLEEP(_seconds) Sleep(_seconds * 1000)
-#define NFNN_PRINT_WORKING_DIR()             \
-    do                                       \
-    {                                        \
-        char Buffer[1024];                   \
-        GetCurrentDirectoryA(1024, Buffer);  \
-        printf("Working dir: %s\n", Buffer); \
+#define NFNN_PRINT_WORKING_DIR()                                                                                       \
+    do                                                                                                                 \
+    {                                                                                                                  \
+        char Buffer[1024];                                                                                             \
+        GetCurrentDirectoryA(1024, Buffer);                                                                            \
+        printf("Working dir: %s\n", Buffer);                                                                           \
     } while (0)
 #else
 #define NFNN_ISVALIDSOCKET(s) ((s) >= 0)
@@ -40,12 +39,12 @@ typedef SOCKET nfnn_platform_socket;
 typedef int nfnn_platform_socket;
 #define NFNN_GETSOCKETERRNO() (errno)
 #define NFNN_PLATFORM_SLEEP(_seconds) sleep(_seconds)
-#define NFNN_PRINT_WORKING_DIR()             \
-    do                                       \
-    {                                        \
-        char Buffer[1024];                   \
-        getcwd(Buffer, 1024);                \
-        printf("Working dir: %s\n", Buffer); \
+#define NFNN_PRINT_WORKING_DIR()                                                                                       \
+    do                                                                                                                 \
+    {                                                                                                                  \
+        char Buffer[1024];                                                                                             \
+        getcwd(Buffer, 1024);                                                                                          \
+        printf("Working dir: %s\n", Buffer);                                                                           \
     } while (0)
 #endif
 
@@ -58,8 +57,7 @@ typedef struct addrinfo nfnn_addrinfo;
 #define NFNN_IPPROTO_TCP IPPROTO_TCP
 #define NFNN_AF_UNSPEC AF_UNSPEC
 
-static void
-NfNN_Network_GetAddrinfo(nfnn_addrinfo *Hints, nfnn_addrinfo **Result, char *Host, char *Port)
+static void NfNN_Network_GetAddrinfo(nfnn_addrinfo *Hints, nfnn_addrinfo **Result, char *Host, char *Port)
 {
     int R = getaddrinfo(Host, Port, Hints, Result);
     NFNN_ASSERT(R == 0, "getaddrinfo failed");

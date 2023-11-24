@@ -8,9 +8,9 @@
 #include <sys/time.h>
 #endif
 
-#include <time.h>
-#include <stdio.h>
 #include "nfnn_types.h"
+#include <stdio.h>
+#include <time.h>
 
 typedef struct nfnn_time nfnn_time;
 struct nfnn_time
@@ -30,8 +30,7 @@ struct nfnn_time_diff
     s64 Microseconds;
 };
 
-static nfnn_time
-NfNN_Time_CurrentTime()
+static nfnn_time NfNN_Time_CurrentTime()
 {
     nfnn_time Result = {0};
 #if defined(WIN32)
@@ -54,8 +53,7 @@ NfNN_Time_CurrentTime()
     return Result;
 }
 
-static nfnn_time_diff
-NfNN_Time_Diff(nfnn_time Start, nfnn_time End)
+static nfnn_time_diff NfNN_Time_Diff(nfnn_time Start, nfnn_time End)
 {
     nfnn_time_diff Result = {0};
     Result.Seconds = End.Seconds - Start.Seconds;
@@ -68,8 +66,7 @@ NfNN_Time_Diff(nfnn_time Start, nfnn_time End)
     return Result;
 }
 
-static void
-NfNN_Time_Format(nfnn_time TimeInfo, char *Buffer, u32 BufferSize)
+static void NfNN_Time_Format(nfnn_time TimeInfo, char *Buffer, u32 BufferSize)
 {
     struct tm *Time = localtime((time_t *)&TimeInfo.Seconds);
 #if 1
@@ -79,4 +76,4 @@ NfNN_Time_Format(nfnn_time TimeInfo, char *Buffer, u32 BufferSize)
 #endif
 }
 
-#endif // NFNN_TIME_H 
+#endif // NFNN_TIME_H
